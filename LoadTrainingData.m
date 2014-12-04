@@ -12,18 +12,18 @@ function [] = LoadTrainingData()
 
 global TrainingData K N sqrtN;
 
-dirs = cell(3,4,3,3,2);
+dirs = cell(4,5,4,4,2);
 
-face_n = {'SQUARE' 'CIRCLE' 'DASHED'};
-nose_n = {'CIRCLE' 'LINE' 'OVAL' 'SQUARE'};
-mouth_n = {'ANGRY' 'SAD' 'SMILEY'};
-eye_n = {'SQUARE' 'CROSS' 'CIRCLE'};
-pos_neg = {'positive' 'negative'};
+face_n = {'SQUARE', 'CIRCLE' ,'DASHED', 'NONE'};
+nose_n = {'CIRCLE', 'LINE','SQUARE', 'NONE','OVAL'};
+mouth_n = {'ANGRY', 'SAD' ,'SMILEY', 'NONE'};
+eye_n = {'SQUARE', 'CROSS' ,'CIRCLE', 'NONE'};
+pos_neg = {'positive' ,'negative'};
 
-for face=1:3
-    for nose=1:4
-        for mouth=1:3
-            for eye=1:3
+for face=1:4
+    for nose=1:5
+        for mouth=1:4
+            for eye=1:4
                 for type=1:2
                 dirs{face,nose,mouth,eye,type} = strcat(mat2str(face_n{face}),'/',...
                     mat2str(nose_n{nose}),'/',mat2str(mouth_n{mouth}),'/',...
@@ -36,17 +36,43 @@ end
 
 num = 1;
 TrainingData = cell(K, 1);
-numExamples = 200; %number of example
+numExamples = 1000; %number of example
 
 
-for face=1:2
-    for nose=1:1
-        for mouth=1:1
-            for eye=1:2
+for face=4:4
+    for nose=4:4
+        for mouth=4:4
+            for eye=1:4
                 TrainingData{num}.name = dirs{face,nose,mouth,eye,type};
                 TrainingData{num}.size = numExamples;
-%                 TrainingData{num}.positive = cell(numExamples,1);
-%                 TrainingData{num}.negative = cell(numExamples,1);
+                for type=1:2 
+                    for index=0:numExamples-1                          
+                        if type == 2
+                            TrainingData{num}.negative(:,index+1) = reshape(imresize(im2double(rgb2gray(imread(strcat('../SmilyFaces/feri2/',...
+                            strrep(dirs{face,nose,mouth,eye,type},'''',''),...
+                            int2str(index),'.PNG')))),[sqrtN,sqrtN]),N,1);
+                        else
+                            TrainingData{num}.positive(:,index+1) = reshape(imresize(im2double(rgb2gray(imread(strcat('../SmilyFaces/feri2/',...
+                            strrep(dirs{face,nose,mouth,eye,type},'''',''),...
+                            int2str(index),'.PNG')))),[sqrtN,sqrtN]),N,1);
+                        end
+
+                    end
+                end
+                num = num + 1
+
+            end
+        end
+    end
+end
+
+
+for face=4:4
+    for nose=4:4
+        for mouth=1:4
+            for eye=4:4
+                TrainingData{num}.name = dirs{face,nose,mouth,eye,type};
+                TrainingData{num}.size = numExamples;
                 for type=1:2 
                     for index=0:numExamples-1  
                         
@@ -69,6 +95,64 @@ for face=1:2
     end
 end
 
+for face=4:4
+    for nose=1:5
+        for mouth=4:4
+            for eye=4:4
+                TrainingData{num}.name = dirs{face,nose,mouth,eye,type};
+                TrainingData{num}.size = numExamples;
+                for type=1:2 
+                    for index=0:numExamples-1  
+                        
+                        if type == 2
+                            TrainingData{num}.negative(:,index+1) = reshape(imresize(im2double(rgb2gray(imread(strcat('../SmilyFaces/feri2/',...
+                            strrep(dirs{face,nose,mouth,eye,type},'''',''),...
+                            int2str(index),'.PNG')))),[sqrtN,sqrtN]),N,1);
+                        else
+                            TrainingData{num}.positive(:,index+1) = reshape(imresize(im2double(rgb2gray(imread(strcat('../SmilyFaces/feri2/',...
+                            strrep(dirs{face,nose,mouth,eye,type},'''',''),...
+                            int2str(index),'.PNG')))),[sqrtN,sqrtN]),N,1);
+                        end
+
+                    end
+                end
+                num = num + 1;
+
+            end
+        end
+    end
+end
+
+for face=1:4
+    for nose=4:4
+        for mouth=4:4
+            for eye=4:4
+                TrainingData{num}.name = dirs{face,nose,mouth,eye,type};
+                TrainingData{num}.size = numExamples;
+                for type=1:2 
+                    for index=0:numExamples-1  
+                        
+                        if type == 2
+                            TrainingData{num}.negative(:,index+1) = reshape(imresize(im2double(rgb2gray(imread(strcat('../SmilyFaces/feri2/',...
+                            strrep(dirs{face,nose,mouth,eye,type},'''',''),...
+                            int2str(index),'.PNG')))),[sqrtN,sqrtN]),N,1);
+                        else
+                            TrainingData{num}.positive(:,index+1) = reshape(imresize(im2double(rgb2gray(imread(strcat('../SmilyFaces/feri2/',...
+                            strrep(dirs{face,nose,mouth,eye,type},'''',''),...
+                            int2str(index),'.PNG')))),[sqrtN,sqrtN]),N,1);
+                        end
+
+                    end
+                end
+                num = num + 1;
+
+            end
+        end
+    end
+end
+
+Perm1 = randperm(length(TrainingData));
+TrainingData=TrainingData(Perm1);
 disp('training data is loaded');
 
 end

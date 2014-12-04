@@ -3,7 +3,7 @@ function [parent, theta] = TreeMaker()
    global TrainingData  lambda_0 lambda_1 N K;
     parent = repmat([-1], K,1);
     theta = zeros(N, 2*K+1); % This should be 2*K + 1 
-    ted = zeros(2*K+1); 
+    ted = zeros(2*K+1,1); 
     
     numSuperClass = 0;
     theta(:, K+1) = mvnrnd(zeros(1, N), lambda_0*eye(N)); 
@@ -15,15 +15,15 @@ function [parent, theta] = TreeMaker()
     for i=1:K
         
         parent(i) = K+1;% K + 1 + numSuperClass+1; %TODO: make a supercatagory
-        [lastThetaBest, Beta] = findBestBeta(i, theta, parent);
-        likelihoodBest = computeLikelihood(i, Beta) + CRP.ProbabilityNew(numSuperClass);
+        [lastThetaBest, Beta, val] = findBestBeta(i, theta, parent, 1);
+        likelihoodBest = -val + CRP.ProbabilityNew(numSuperClass, ted); %computeLikelihood(i, Beta) +
         who = K + 2 + numSuperClass; %when this is the new we should also find theta_1
         
         disp(['likelihood of class ' , int2str(i), ' goes under a new supercatagory is', num2str(likelihoodBest)]);
         for j=K+2:K+1+numSuperClass
             parent(i) = j;
-            [lastTheta, Beta] = findBestBeta(i, theta, parent);
-            likelihood = computeLikelihood(i, Beta) + CRP.Probability(j, numSuperClass, ted);
+            [lastTheta, Beta, val] = findBestBeta(i, theta, parent, 0);
+            likelihood = -val+ CRP.Probability(j, numSuperClass, ted);%computeLikelihood(i, Beta) ;
             if likelihood > likelihoodBest
                 who = j;
                 likelihoodBest = likelihood;
@@ -51,7 +51,7 @@ function [parent, theta] = TreeMaker()
         % theta for this node and its parent.
         disp('whole tree is optimized');
         
-        
+       % showAll(theta,TrainingData, parent);
         
         
     end
@@ -82,9 +82,11 @@ function [value] = computeLikelihood(class, beta)
     n = size(x,1);
     value = value + sum(log(1./(1+exp(beta'*x))));
     
+    disp(['likelihood for beta is computed and the value is ', num2str(value), ' and p_beta is ',...
+        num2str(p_beta)]);
+
     value = value + p_beta;
     
-    disp(['likelihood for beta is computed and the value is ', num2str(value)]);
 end
 
 
