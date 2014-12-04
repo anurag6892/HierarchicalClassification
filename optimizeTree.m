@@ -2,8 +2,7 @@ function [updatedTheta] = optimizeTree(theta, parents)
 % Do it for a two-level hierarchy and then extend it to a higher level
 % hierarchy
 global K;
-curTheta = theta;
-updatedTheta = curTheta;
+updatedTheta = theta;
 options = optimoptions(@fminunc,'GradObj','on', 'Display','off', 'Algorithm','quasi-newton');
 
 epsilon = 0.1;
@@ -14,30 +13,28 @@ prev_value = 10000;
 while converged ~=1 % or fixed number of iterations( 3 ? :P :P)
     count = count +1;
     %optimize theta 0
- %   cur_value = theta0_obj1(curTheta(:,K+1))
-    updatedTheta(:,K+1) = fminunc(@theta0_obj1, curTheta(:,K+1), options);
+    updatedTheta(:,K+1) = fminunc(@theta0_obj1, updatedTheta(:,K+1), options);
     updated_value = theta0_obj1(updatedTheta(:,K+1));
-    %optimize theta 1 and theta 2
+    %optimize theta 1
     for i =K+1:size(parents)
         if(parents(i) == -1)
             continue
         end
         if(parents(i) == K+1) %super class
-            updatedTheta(:,i) = fminunc(@(theta1) theta1_obj1(theta1,i),curTheta(:,i), options);
+            updatedTheta(:,i) = fminunc(@(theta1) theta1_obj1(theta1,i),updatedTheta(:,i), options);
             updated_value = updated_value + theta1_obj1(updatedTheta(:,i),i);
         end
     end
     
+    %optimize theta 2
     for i =1:K
         if(parents(i) == -1)
             continue
         end      
-        updatedTheta(:,i) = fminunc(@(theta2) theta2_obj1(theta2,i),curTheta(:,i), options);
+        updatedTheta(:,i) = fminunc(@(theta2) theta2_obj1(theta2,i),updatedTheta(:,i), options);
         updated_value = updated_value + theta2_obj1(updatedTheta(:,i),i);
     end
     
-%     updated_value
-%     prev_value
     difference = updated_value - prev_value;
     
     if(abs(difference) < epsilon)
@@ -45,24 +42,7 @@ while converged ~=1 % or fixed number of iterations( 3 ? :P :P)
     end
         
     prev_value = updated_value;
-    curTheta = updatedTheta;
 
-%     % check for convergence
-%     %   cur_norm = norm(updatedTheta - curTheta)
-%     %         if cur_norm > prev_norm
-%     %             converged = 1;
-%     %             updatedTheta = curTheta;
-%     %             %count
-%     %         else
-%     if cur_norm < epsilon
-%         converged = 1;
-%         %count
-%     else
-%         curTheta = updatedTheta;
-%     end
-%     %count
-%     prev_norm = cur_norm;
-%     %imshow(reshape(sum(updatedTheta, 2),[10,10]))
 end
 
 
@@ -86,19 +66,10 @@ end
             
             beta = sum(updatedTheta(:,ancestors),2) + updatedTheta(:,leafClass);
             
-            %for j = 1:size(TrainingData{leafClass}.positive)
-            %  obj = obj + log(1 + exp( (-1)*(beta + theta0)'*TrainingData{leafClass}.positive{j}));
-            %  grad = grad - (1/(1 + exp( (beta + theta0)'*TrainingData{leafClass}.positive{j} )))*TrainingData{leafClass}.positive{j};
-            %end
-            temp = sum(log(1 + exp( (-1)*(beta + theta0)'*TrainingData{leafClass}.positive)));
-            obj = obj + temp;
+            obj = obj + sum(log(1 + exp( (-1)*(beta + theta0)'*TrainingData{leafClass}.positive)));
             grad = grad - TrainingData{leafClass}.positive*((1./(1 + exp( (beta + theta0)'*TrainingData{leafClass}.positive )))');
-            %for j = 1:size(TrainingData{leafClass}.negative)
-            %  obj = obj + log(1 + exp( 1*(beta + theta0)'*TrainingData{leafClass}.negative{j}));
-            %  grad = grad + (1/(1 + exp( (-1)*(beta + theta0)'*TrainingData{leafClass}.negative{j} )))*TrainingData{leafClass}.negative{j};
-            %end
-            temp = sum(log(1 + exp( (beta + theta0)'*TrainingData{leafClass}.negative)));
-            obj = obj + temp;
+            
+            obj = obj + sum(log(1 + exp( (beta + theta0)'*TrainingData{leafClass}.negative)));
             grad = grad + sum( TrainingData{leafClass}.negative*((1./(1 + exp( (-1)*(beta + theta0)'*TrainingData{leafClass}.negative )))'), 2);
             
         end
@@ -130,16 +101,9 @@ end
             
             beta = sum(updatedTheta(:,ancestors),2) + updatedTheta(:,leafClass);
             
-            %for j = 1:size(TrainingData{leafClass}.positive)
-            %  obj = obj + log(1 + exp( -1*(beta + theta1)'*TrainingData{leafClass}.positive{j} ));
-            %  grad = grad - (1/(1 + exp( (beta + theta1)'*TrainingData{leafClass}.positive{j} )))*TrainingData{leafClass}.positive{j};
-            %end
             obj = obj + sum(log(1 + exp( (-1)*(beta + theta1)'*TrainingData{leafClass}.positive)));
             grad = grad - sum( TrainingData{leafClass}.positive*((1./(1 + exp( (beta + theta1)'*TrainingData{leafClass}.positive )))'), 2);
-            %for j = 1:size(TrainingData{leafClass}.negative)
-            % obj = obj + log(1 + exp( 1*(beta + theta1)'*TrainingData{leafClass}.negative{j} ));
-            %  grad = grad + (1/(1 + exp( (-1)*(beta + theta1)'*TrainingData{leafClass}.negative{j} )))*TrainingData{leafClass}.negative{j};
-            %end
+            
             obj = obj + sum(log(1 + exp( (beta + theta1)'*TrainingData{leafClass}.negative)));
             grad = grad + sum( TrainingData{leafClass}.negative*((1./(1 + exp( (-1)*(beta + theta1)'*TrainingData{leafClass}.negative )))'), 2);
             
@@ -162,16 +126,9 @@ end
         %assert(size(ancestors,1) ~= 0, 'Ancestors is empty');
         beta = sum(updatedTheta(:,ancestors),2);
         
-        %for j = 1:size(TrainingData{leafClass}.positive)
-        %      obj = obj + log(1 + exp( -1*(beta + theta2)'*TrainingData{leafClass}.positive{j}));
-        %      grad = grad - (1/(1 + exp( (beta + theta2)'*TrainingData{leafClass}.positive{j} )))*TrainingData{leafClass}.positive{j};
-        %end
         obj = obj + sum(log(1 + exp( (-1)*(beta + theta2)'*TrainingData{leafClass}.positive)));
         grad = grad - sum( TrainingData{leafClass}.positive*((1./(1 + exp( (beta + theta2)'*TrainingData{leafClass}.positive )))'), 2);
-        %for j = 1:size(TrainingData{leafClass}.negative)
-        %   obj = obj + log(1 + exp( 1*(beta + theta2)'*TrainingData{leafClass}.negative{j}));
-        %   grad = grad + (1/(1 + exp( (-1)*(beta + theta2)'*TrainingData{leafClass}.negative{j} )))*TrainingData{leafClass}.negative{j};
-        %end
+        
         obj = obj + sum(log(1 + exp( (beta + theta2)'*TrainingData{leafClass}.negative)));
         grad = grad + sum( TrainingData{leafClass}.negative*((1./(1 + exp( (-1)*(beta + theta2)'*TrainingData{leafClass}.negative )))'), 2);
         
