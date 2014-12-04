@@ -25,7 +25,7 @@ global N K sqrtN;
 global TrainingData;
 
 
-K = 9; % Number of classes
+K = 32; % Number of classes
 sqrtN=17;
 N = sqrtN*sqrtN; % size of feature vectors
 
@@ -35,10 +35,11 @@ lambda_0 = 1;
 lambda_1 = 1;
 lambda_2 = 1;
 
-LoadTrainingData();
-TrainingData
-
-
+% LoadTrainingData();
+% save('training', 'TrainingData');
+temp=load('training.mat');
+TrainingData2 = temp.TrainingData;
+ReadTrainingData(TrainingData2);
 [parent, theta] = TreeMaker();
 showAll(theta, TrainingData, parent);
 

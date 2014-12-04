@@ -1,7 +1,6 @@
 function [  ] = showAll( theta, TrainingData, parent )
 
 global K sqrtN;
-
 n=size(theta,2);
 m=K;
 figure;
@@ -10,6 +9,7 @@ for i=1:m
     subplot(4,m,i);
     imshow(im2double(reshape(TrainingData{i}.positive(:,1),[sqrtN,sqrtN])),...
         [min(TrainingData{i}.positive(:)), max(TrainingData{i}.positive(:))]);
+    title(num2str(i));
     
 end
 
@@ -33,6 +33,7 @@ for i=1:m
 end
 
 
+
 for i=1:m
     subplot(4,m,2*m+i);
     imshow(im2double(reshape(theta(:,i),[sqrtN,sqrtN])), [Min, Max]);
@@ -45,8 +46,13 @@ for i=m+1:2*m
     
 end
 
-parent(K+1) = 0;
-figure;
+for i=1:size(parent)
+    if parent(i) == -1
+        parent(i) = 0;
+    end
+end
+    
+    figure;
 treeVec = parent';
 treeplot(treeVec);
 count = size(treeVec,2);
