@@ -8,11 +8,13 @@ function [parent, theta] = TreeMaker()
     numSuperClass = 0;
     theta(:, K+1) = mvnrnd(zeros(1, N), lambda_0*eye(N)); 
     parent(K+1) = -1;   % This is theta_0
+    root(K+1) = true;
     
     %right now we assume the first K element in parent and theta are the
     %leaf and corrosponding to the classes.
   
     for i=1:K
+        
         
         parent(i) = K+1;% K + 1 + numSuperClass+1; %TODO: make a supercatagory
         [lastThetaBest, Beta, val] = findBestBeta(i, theta, parent, 1);
