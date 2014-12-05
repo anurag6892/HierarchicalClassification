@@ -42,7 +42,7 @@ num = 1;
 TrainingData = cell(K, 1);
 
 
-for face=1:4
+for face=4:4
     for nose=4:4
         for mouth=1:4
             for eye=4:4
