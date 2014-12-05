@@ -31,7 +31,7 @@ function [parent, theta] = TreeMaker()
                 lastThetaBest = lastTheta;
             end
             disp(['likelihood of class ' , int2str(i),...
-                ' goes under supercatagory of ', num2str(j), 'is ', num2str(likelihood)]);
+                ' goes under supercatagory of ', num2str(j), ' is ', num2str(likelihood)]);
 
         end
         
