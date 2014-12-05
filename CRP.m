@@ -11,8 +11,8 @@ classdef CRP
       end
       function prob = Probability(j, numClass, ted)
          prob = log(ted(j) / (sum(ted,1)+CRP.lambda));
-         disp(['the CRP for ' num2str(j), 'containing ', num2str(ted(j)),...
-             ' classes and numClasses= ', num2str(numClass), ' is ', num2str(prob)]);
+         disp(['the CRP for ' num2str(j), ' containing ', num2str(ted(j)),...
+             ' classes and numClasses = ', num2str(numClass), ' is ', num2str(prob)]);
 
       end
       
