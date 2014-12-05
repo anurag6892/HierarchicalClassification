@@ -4,6 +4,7 @@ clear all
 %   nodes with multi-level trees
 % optimize tree assumes a clear separation of root node, interior node, and
 %   leaf nodes 
+% Ancestors list also needs to constructed based on root
  
 global lambda_0  lambda_1  lambda_2  lambda;
 global N K sqrtN;
