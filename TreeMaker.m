@@ -2,55 +2,85 @@ function [parent, theta] = TreeMaker()
     
    global lambda_0 N K;
    global ancestorsList;
+   Inf = 1000000;
+   MaxChild = 10;
     parent = repmat([-1], K,1);
     theta = zeros(N, 2*K+1); % This should be 2*K + 1 
     ted = zeros(2*K+1,1); 
+    root = false(K);
     
-    numSuperClass = 0;
     theta(:, K+1) = mvnrnd(zeros(1, N), lambda_0*eye(N)); 
     parent(K+1) = -1;   % This is theta_0
     root(K+1) = true;
     
     %right now we assume the first K element in parent and theta are the
     %leaf and corrosponding to the classes.
-  
+    
+    
+    likelihoodBest = -Inf;
     for i=1:K
-        
-        
-        parent(i) = K+1;% K + 1 + numSuperClass+1; %TODO: make a supercatagory
-        [lastThetaBest, ~, val] = findBestBeta(i, theta, parent, 1);
-        likelihoodBest = -val + CRP.ProbabilityNew(numSuperClass, ted); %computeLikelihood(i, Beta) +
-        who = K + 2 + numSuperClass; %when this is the new we should also find theta_1
-        
-        disp(['likelihood of class ' , int2str(i), ' goes under a new supercatagory is ', num2str(likelihoodBest)]);
-        for j=K+2:K+1+numSuperClass
-            parent(i) = j;
-            [lastTheta, ~, val] = findBestBeta(i, theta, parent, 0);
-            likelihood = -val+ CRP.Probability(j, numSuperClass, ted);%computeLikelihood(i, Beta) ;
-            if likelihood > likelihoodBest
-                who = j;
-                likelihoodBest = likelihood;
-                lastThetaBest = lastTheta;
+        n = size(parent,1);
+        new = false;
+        for j=K+1:n   %making new supercatagory under root j for this node.
+            if root(j)
+                parent(i) = j;
+                [lastTheta, ~, val] = findBestBeta(i, theta, parent, 1);
+                likelihood = -val + CRP.ProbabilityNew(ted); %computeLikelihood(i, Beta) +
+                disp(['likelihood of class ' , int2str(i),...
+                    ' goes under a new supercatagory of root', num2str(j),...
+                    ' is ', num2str(likelihood)]);
+                
+                if(likelihood > likelihoodBest)
+                    likelihoodBest = likelihood;
+                    lastThetaBest = lastTheta;
+                    who = j;
+                    new = true;
+                end
             end
-            disp(['likelihood of class ' , int2str(i),...
-                ' goes under supercatagory of ', num2str(j), ' is ', num2str(likelihood)]);
+        end
+        
+        for j=K+1:n
+            if(~root(j))    %for all supercatagoris
+                parent(i) = j;
+                [lastTheta, ~, val] = findBestBeta(i, theta, parent, 0);
+                likelihood = -val+ CRP.Probability(j, ted);%computeLikelihood(i, Beta) ;
+                if likelihood > likelihoodBest
+                    who = j;
+                    likelihoodBest = likelihood;
+                    lastThetaBest = lastTheta;
+                    new = false;
+                end
+                disp(['likelihood of class ' , int2str(i),...
+                    ' goes under supercatagory of ', num2str(j), ' is ', num2str(likelihood)]);
+            end
 
         end
         
-        if(who==K+2+numSuperClass)
-            parent(who) = K+1;
-            theta(:,who) = lastThetaBest/2;
-            numSuperClass = numSuperClass + 1; 
+        if(new)
+            x = n + 1;
+            parent(i) = x;
+            theta(:,i) = lastThetaBest/2;
+            parent(x) = who;
+            theta(:,x) = lastThetaBest/2;
             lastThetaBest = lastThetaBest/2;
+            ted(x) = 1;
+            cprintf('cyan', ['parent of class ', int2str(i), ' became ',...
+                int2str(x),' under ', num2str(who), ' start optimizing whole tree' ]);
+
+        else
+            parent(i) = who;
+            theta(:,i) = lastThetaBest;            
+            ted(who) = ted(who) + 1;
+            cprintf('cyan', ['parent of class ', int2str(i), ' became ',...
+                int2str(who), ' start optimizing whole tree' ]);
+            cprintf('red', ['starting make node ' num2str(who), ' a root.']);
+            makeNewTree(who);
+
         end
         
-        parent(i) = who;
-        ted(who) = ted(who) + 1;
-        theta(:,i) = lastThetaBest;
-        cprintf('cyan', ['parent of class ', int2str(i), ' became ', int2str(who), ' start optimizing whole tree' ]);
         
         
-        ancestorsList = cell(size(parent,1));
+        ancestorsList = cell(size(parent,1),1);
         for j=1:size(parent)
             temp = [];
             child = j;
@@ -61,14 +91,10 @@ function [parent, theta] = TreeMaker()
             ancestorsList{j} = temp;
         end
         
-        theta = optimizeTree(theta, parent);
         % I assume that it will take care of new supercatagories and update
         % theta for this node and its parent.
-        disp('whole tree is optimized');
-        
-       % showAll(theta,TrainingData, parent);
-        
-        
+        theta = optimizeTree(theta, parent);      
+        disp('whole tree is optimized');      
     end
 end
 

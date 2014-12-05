@@ -43,8 +43,8 @@ TrainingData = cell(K, 1);
 
 
 for face=1:4
-    for nose=1:4
-        for mouth=4:4
+    for nose=4:4
+        for mouth=1:4
             for eye=4:4
                 TrainingData{num} =...
                     TrainingData2{number(face,nose,mouth,eye)};
@@ -57,7 +57,7 @@ end
 
 for face=4:4
     for nose=4:4
-        for mouth=1:4
+        for mouth=4:4
             for eye=1:4
                 TrainingData{num} =...
                     TrainingData2{number(face,nose,mouth,eye)};
