@@ -11,9 +11,57 @@ updatedTheta = theta;
 
 while (converged ~=1 )
     count = count + 1;
+    
+%     levels = zeros(size(parents,1),1);
+%     for i=1:size(parents)
+%         levels(i) = size(ancestorsList{i},1) + 1;
+%     end
+%     
+%     maxlevels = max(levels);
+%     levelNodes = cell(maxlevels,1);
+%     for i=1:maxlevels
+%        levelNodes{i} = []; 
+%     end
+%     
+%     for i=1:size(levels)
+%         levelNodes{levels(i)} =  [levelNodes{levels(i)}; i];
+%     end
+    
+        
+    
+    
+        
     %optimize theta of root node
     updatedTheta(:,root) = fminunc(@theta0_obj1, updatedTheta(:,root), options);
     updated_value = theta0_obj1(updatedTheta(:,root));
+    
+%     for level=2:maxlevels
+%        curNodes = levelNodes{level};
+%        parfor node = 1:size(curNodes)
+%            i = curNodes(node);
+%            if curNodes(node) <= K
+%                if(parents(i) == -1)
+%                     continue
+%                end      
+%                ancestors = ancestorsList{i};
+%                if sum(ancestors == root) == 0
+%                  continue
+%                end
+%                updatedTheta(:,i) = fminunc(@(theta2) theta2_obj1(theta2,i),updatedTheta(:,i), options);
+%                updated_value = updated_value + theta2_obj1(updatedTheta(:,i),i);
+%            else
+%                ancestors = ancestorsList{i};
+%                if sum(ancestors == root) == 0
+%                 continue
+%                end
+%                updatedTheta(:,i) = fminunc(@(theta1) theta1_obj1(theta1,i),updatedTheta(:,i), options);
+%                updated_value = updated_value + theta1_obj1(updatedTheta(:,i),i);
+%            end
+%        end
+%     end
+    
+    
+    
     
     %optimize theta of super class(interior) nodes
     for i=K+2:size(parents,1)
@@ -26,7 +74,7 @@ while (converged ~=1 )
     end
     
     %optimize theta leaf nodes
-    for i =1:K
+    for i=1:K
         if(parents(i) == -1)
             continue
         end      
