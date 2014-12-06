@@ -1,4 +1,6 @@
 clear all
+%delete(gcp)
+%parpool(6) % Change this to number of cores on your machine
 
 % Change allocation size of parents, ted etc. becuase there will be more 
 %   nodes with multi-level trees
@@ -9,6 +11,7 @@ clear all
 global lambda_0  lambda_1  lambda_2  lambda;
 global N K sqrtN;
 global TrainingData;
+global parent;
 
 
 K = 13; % Number of classes
@@ -26,7 +29,7 @@ lambda_2 = 1;
 temp=load('training.mat');
 TrainingData2 = temp.TrainingData;
 ReadTrainingData(TrainingData2);
-[parent, theta] = TreeMaker();
+theta = TreeMaker();
 showAll(theta, TrainingData, parent);
 
 

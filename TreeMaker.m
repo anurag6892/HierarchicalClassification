@@ -1,7 +1,8 @@
-function [parent, theta] = TreeMaker()
+function [theta] = TreeMaker()
     
     global lambda_0 N K;
     global ancestorsList;
+    global parent;
     Inf = 1000000;
     MaxChild = 4;
     parent = repmat([-1], K,1);
