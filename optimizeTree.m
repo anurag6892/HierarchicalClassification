@@ -9,7 +9,7 @@ options = optimoptions(@fminunc,'GradObj','on', 'Display','off', 'Algorithm','qu
 
 updatedTheta = theta;
 
-while (converged ~=1 && count < 5)
+while (converged ~=1 )
     count = count + 1;
     
     levels = zeros(size(parents,1),1);
@@ -61,7 +61,7 @@ while (converged ~=1 && count < 5)
     else % if (root == K+1)
     
     %optimize theta of super class(interior) nodes
-    for i=K+2:size(parents)
+    for i=K+2:size(parents,1)
         ancestors = ancestorsList{i};
         if sum(ancestors == root) == 0
                 continue

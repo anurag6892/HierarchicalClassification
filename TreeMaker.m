@@ -3,7 +3,7 @@ function [parent, theta] = TreeMaker()
     global lambda_0 N K;
     global ancestorsList;
     Inf = 1000000;
-    MaxChild = 3;
+    MaxChild = 4;
     parent = repmat([-1], K,1);
     theta = zeros(N, 2*K+1); % This should be 2*K + 1 
     ted = zeros(2*K+1,1); 
