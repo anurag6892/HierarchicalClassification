@@ -1,6 +1,6 @@
 function [ parentUp, thetaUp, tedUp ] = makeNewTree(root, parent, theta, ted2) %TODO they don't go all under one supercatagory
 
-global K;
+global K ancestorsList;
 
 numSuperClass = 0;
 ted = zeros(2*K+1,1);
