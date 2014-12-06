@@ -1,9 +1,10 @@
-function [ parentUp, thetaUp ] = makeNewTree(root, parent, theta) %TODO they don't go all under one supercatagory
+function [ parentUp, thetaUp, tedUp ] = makeNewTree(root, parent, theta, ted2) %TODO they don't go all under one supercatagory
 
 global K;
 
 numSuperClass = 0;
 ted = zeros(2*K+1,1);
+ted2(root) = 0;
 
 considering = [];
 for i=1:K
@@ -57,9 +58,13 @@ for c=1:size(considering,1)
     
     if(who==n+1)
         ted(who) = 1;
+        ted2(who) = 1;
         parent(who) = root;
         theta(:,who) = lastThetaBest/2;        
         lastThetaBest = lastThetaBest/2;
+    else
+        ted(who) = ted(who) + 1;
+        ted2(who) = ted2(who) + 1;
         
     end
     
@@ -67,7 +72,7 @@ for c=1:size(considering,1)
     
     parent(i) = who;
     
-    ted(who) = ted(who) + 1;
+    
     
     theta(:,i) = lastThetaBest;
     
@@ -84,7 +89,7 @@ for c=1:size(considering,1)
             ancestorsList{j} = temp;
         end
     
-    theta = optimizeTree(theta, parent, root);
+    theta = optimizeTree(theta, parent, K+1);
     
     % I assume that it will take care of new supercatagories and update
     
@@ -97,8 +102,8 @@ for c=1:size(considering,1)
 end
 
   parentUp = parent;
-    thetaUp = theta;
-
+  thetaUp = theta;
+  tedUp = ted2;
 % showAll(theta,TrainingData, parent);
 
 
