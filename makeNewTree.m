@@ -1,6 +1,6 @@
 function [ parentUp, thetaUp, tedUp ] = makeNewTree(root, parent, theta, ted2) %TODO they don't go all under one supercatagory
 
-global K;
+global K ancestorsList;
 
 numSuperClass = 0;
 ted = zeros(2*K+1,1);
@@ -47,11 +47,11 @@ for c=1:size(considering,1)
             
         end
         
-        disp(['NEWWW likelihood of class ' , int2str(i),...           
-        ' goes under supercatagory of ', num2str(j), 'is ', num2str(likelihood)]);
-    
-    
-    
+        disp(['NEWWW likelihood of class ' , int2str(i),...
+            ' goes under supercatagory of ', num2str(j), 'is ', num2str(likelihood)]);
+        
+        
+        
     end
     
     
@@ -60,7 +60,7 @@ for c=1:size(considering,1)
         ted(who) = 1;
         ted2(who) = 1;
         parent(who) = root;
-        theta(:,who) = lastThetaBest/2;        
+        theta(:,who) = lastThetaBest/2;
         lastThetaBest = lastThetaBest/2;
     else
         ted(who) = ted(who) + 1;
@@ -79,15 +79,15 @@ for c=1:size(considering,1)
     cprintf('cyan', ['NEWWWW parent of class ', int2str(i), ' became ', int2str(who), ' start optimizing whole tree' ]);
     
     ancestorsList = cell(size(parent,1),1);
-        for j=1:size(parent)
-            temp = [];
-            child = j;
-            while parent(child) ~= -1
-                temp = [temp; parent(child)];
-                child = parent(child);
-            end
-            ancestorsList{j} = temp;
+    for j=1:size(parent,1)
+        temp = [];
+        child = j;
+        while parent(child) ~= -1
+            temp = [temp; parent(child)];
+            child = parent(child);
         end
+        ancestorsList{j} = temp;
+    end
     
     theta = optimizeTree(theta, parent, K+1);
     
@@ -97,13 +97,13 @@ for c=1:size(considering,1)
     
     disp('NEWWW whole tree is optimized');
     
-  
-
+    
+    
 end
 
-  parentUp = parent;
-  thetaUp = theta;
-  tedUp = ted2;
+parentUp = parent;
+thetaUp = theta;
+tedUp = ted2;
 % showAll(theta,TrainingData, parent);
 
 
