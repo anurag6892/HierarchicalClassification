@@ -1,6 +1,6 @@
 function [] = ReadTrainingData(TrainingData2)
-% Training data is an array of size k (which k corosponds to number of
-% classes). Each compoent  or the array is a cell. Each cell has a
+% Training data is an array of size k (which k corresponds to number of
+% classes). Each component  of the array is a cell. Each cell has a
 % name (name of the class), size of training examples and n training
 % examples. Each training example contiains input(x) which is an image
 % and ouput which is either +1, -1.

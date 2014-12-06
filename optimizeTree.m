@@ -1,4 +1,4 @@
-function [updatedTheta] = optimizeTree(theta, parents)
+function [updatedTheta] = optimizeTree(theta, parents, root)
 global K ancestorsList;
 
 epsilon = 0.1;
@@ -9,13 +9,18 @@ options = optimoptions(@fminunc,'GradObj','on', 'Display','off', 'Algorithm','qu
 
 updatedTheta = theta;
 
-while converged ~=1 
+while (converged ~=1 && count < 5)
+    count = count + 1;
     %optimize theta of root node
-    updatedTheta(:,K+1) = fminunc(@theta0_obj1, updatedTheta(:,K+1), options);
-    updated_value = theta0_obj1(updatedTheta(:,K+1));
+    updatedTheta(:,root) = fminunc(@theta0_obj1, updatedTheta(:,root), options);
+    updated_value = theta0_obj1(updatedTheta(:,root));
     
     %optimize theta of super class(interior) nodes
     for i=K+2:size(parents)
+        ancestors = ancestorsList{leafClass};
+        if sum(ancestors == root) == 0
+                continue
+        end
         updatedTheta(:,i) = fminunc(@(theta1) theta1_obj1(theta1,i),updatedTheta(:,i), options);
         updated_value = updated_value + theta1_obj1(updatedTheta(:,i),i);
     end
@@ -25,6 +30,10 @@ while converged ~=1
         if(parents(i) == -1)
             continue
         end      
+        ancestors = ancestorsList{leafClass};
+        if sum(ancestors == root) == 0
+                continue
+        end
         updatedTheta(:,i) = fminunc(@(theta2) theta2_obj1(theta2,i),updatedTheta(:,i), options);
         updated_value = updated_value + theta2_obj1(updatedTheta(:,i),i);
     end
@@ -50,8 +59,11 @@ end
                 continue
             end
             ancestors = ancestorsList{leafClass};
-            ancestors = ancestors(ancestors ~= K + 1); % Remove root node
+            if sum(ancestors == root) == 0
+                continue
+            end
             
+            ancestors = ancestors(ancestors ~= root);
             beta = sum(updatedTheta(:,ancestors),2) + updatedTheta(:,leafClass);
             
             obj = obj + sum(log(1 + exp( (-1)*(beta + theta0)'*TrainingData{leafClass}.positive)));
@@ -76,9 +88,14 @@ end
             end
             ancestors = ancestorsList{leafClass};
             
+            if sum(ancestors == root) == 0
+                disp('lol2')
+                continue
+            end
             if sum(ancestors == superClass) == 0
                 continue
             end
+            
             ancestors = ancestors(ancestors ~= superClass);
             
             beta = sum(updatedTheta(:,ancestors),2) + updatedTheta(:,leafClass);
@@ -100,7 +117,10 @@ end
         obj = 0;
         grad = 0;
         
-        ancestors = ancestorsList{leafClass};
+        ancestors = ancestorsList{leafClass};            
+        if sum(ancestors == root) == 0
+            disp('lol1')    
+        end
         beta = sum(updatedTheta(:,ancestors),2);
         
         obj = obj + sum(log(1 + exp( (-1)*(beta + theta2)'*TrainingData{leafClass}.positive)));
