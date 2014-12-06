@@ -1,93 +1,103 @@
-function [ parentUpdated, thetaUpdated ] = makeNewTree(root, parent, theta) %TODO they don't go all under one supercatagory
-global TrainingData  lambda_0 lambda_1 N K;
+function [ parentUp, thetaUp ] = makeNewTree(root, parent, theta) %TODO they don't go all under one supercatagory
 
+global K;
 
 numSuperClass = 0;
+ted = zeros(2*K+1,1);
 
+considering = [];
 for i=1:K
-    considering = [];
     if(parent(i) == root)
         parent(i) = -1;
         considering = [considering; i];
     end
 end
 
-for i=1:size(considering,1)
-        parent(i) = root;% K + 1 + numSuperClass+1; %TODO: make a supercatagory
+
+first = size(parent,1)+1;
+
+for c=1:size(considering,1)
+    n = size(parent,1);
+    i= considering(c);
+    
+    parent(i) = root;
+    [lastThetaBest, ~, val] = findBestBeta(i, theta, parent, 1, root);
+    likelihoodBest = -val + CRP.ProbabilityNew(ted);
+    who = n+1;
+    
+    disp(['NEWWWW  likelihood of class ' , int2str(i), ' goes under a new supercatagory is', num2str(likelihoodBest)]);
+    
+    
+    for j=first:n
         
-        [lastThetaBest, Beta, val] = findBestBeta(i, theta, parent, 1);
+        parent(i) = j;
         
-        likelihoodBest = -val + CRP.ProbabilityNew(numSuperClass, ted); %computeLikelihood(i, Beta) +
+        [lastTheta, ~, val] = findBestBeta(i, theta, parent, 0, root);
         
-        who = K + 2 + numSuperClass; %when this is the new we should also find theta_1
+        likelihood = -val+ CRP.Probability(j, ted);%computeLikelihood(i, Beta) ;
         
-        
-        
-        disp(['likelihood of class ' , int2str(i), ' goes under a new supercatagory is', num2str(likelihoodBest)]);
-        
-        for j=K+2:K+1+numSuperClass
+        if likelihood > likelihoodBest
             
-            parent(i) = j;
+            who = j;
             
-            [lastTheta, Beta, val] = findBestBeta(i, theta, parent, 0);
+            likelihoodBest = likelihood;
             
-            likelihood = -val+ CRP.Probability(j, numSuperClass, ted);%computeLikelihood(i, Beta) ;
-            
-            if likelihood > likelihoodBest
-                
-                who = j;
-                
-                likelihoodBest = likelihood;
-                
-                lastThetaBest = lastTheta;
-                
-            end
-            
-            disp(['likelihood of class ' , int2str(i),...
-                
-            ' goes under supercatagory of ', num2str(j), 'is ', num2str(likelihood)]);
-        
-        
-        
-        end
-        
-        
-        
-        if(who==K+2+numSuperClass)
-            
-            parent(who) = K+1;
-            
-            theta(:,who) = lastThetaBest/2;
-            
-            numSuperClass = numSuperClass + 1;
-            
-            lastThetaBest = lastThetaBest/2;
+            lastThetaBest = lastTheta;
             
         end
         
-        
-        
-        parent(i) = who;
-        
-        ted(who) = ted(who) + 1;
-        
-        theta(:,i) = lastThetaBest;
-        
-        cprintf('cyan', ['parent of class ', int2str(i), ' became ', int2str(who), ' start optimizing whole tree' ]);
-        
-        
-        
-        theta = optimizeTree(theta, parent);
-        
-        % I assume that it will take care of new supercatagories and update
-        
-        % theta for this node and its parent.
-        
-        disp('whole tree is optimized');
+        disp(['NEWWW likelihood of class ' , int2str(i),...           
+        ' goes under supercatagory of ', num2str(j), 'is ', num2str(likelihood)]);
+    
+    
+    
     end
+    
+    
+    
+    if(who==n+1)
+        ted(who) = 1;
+        parent(who) = root;
+        theta(:,who) = lastThetaBest/2;        
+        lastThetaBest = lastThetaBest/2;
+        
+    end
+    
+    
+    
+    parent(i) = who;
+    
+    ted(who) = ted(who) + 1;
+    
+    theta(:,i) = lastThetaBest;
+    
+    cprintf('cyan', ['NEWWWW parent of class ', int2str(i), ' became ', int2str(who), ' start optimizing whole tree' ]);
+    
+    ancestorsList = cell(size(parent,1),1);
+        for j=1:size(parent)
+            temp = [];
+            child = j;
+            while parent(child) ~= -1
+                temp = [temp; parent(child)];
+                child = parent(child);
+            end
+            ancestorsList{j} = temp;
+        end
+    
+    theta = optimizeTree(theta, parent, root);
+    
+    % I assume that it will take care of new supercatagories and update
+    
+    % theta for this node and its parent.
+    
+    disp('NEWWW whole tree is optimized');
+    
+  
+
 end
 
-
+  parentUp = parent;
+    thetaUp = theta;
 
 % showAll(theta,TrainingData, parent);
 

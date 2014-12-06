@@ -11,7 +11,7 @@ global N K sqrtN;
 global TrainingData;
 
 
-K = 18; % Number of classes
+K = 12; % Number of classes
 sqrtN=17;
 N = sqrtN*sqrtN; % size of feature vectors
 
