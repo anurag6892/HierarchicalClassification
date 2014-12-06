@@ -3,7 +3,7 @@ function [parent, theta] = TreeMaker()
     global lambda_0 N K;
     global ancestorsList;
     Inf = 1000000;
-    MaxChild = 10000;
+    MaxChild = 3;
     parent = repmat([-1], K,1);
     theta = zeros(N, 2*K+1); % This should be 2*K + 1 
     ted = zeros(2*K+1,1); 
@@ -12,7 +12,6 @@ function [parent, theta] = TreeMaker()
     theta(:, K+1) = mvnrnd(zeros(1, N), lambda_0*eye(N)); 
     parent(K+1) = -1;   % This is theta_0
     root(K+1) = true;
-    n = K+1;
     
     
     %right now we assume the first K element in parent and theta are the
@@ -22,7 +21,9 @@ function [parent, theta] = TreeMaker()
     for i=1:K
         new = false;
         who = -1;
-        likelihoodBest = -Inf;
+    likelihoodBest = -Inf;
+    lastThetaBest = -1;
+    n = size(parent,1);
         for j=K+1:n   %making new supercatagory under root j for this node.
             if root(j)
                 parent(i) = j;
@@ -62,7 +63,6 @@ function [parent, theta] = TreeMaker()
         
         if(new)
             x = n + 1;
-            n = n + 1;
             parent(i) = x;
             theta(:,i) = lastThetaBest/2;
             parent(x) = who;
@@ -77,8 +77,13 @@ function [parent, theta] = TreeMaker()
             ted(who) = ted(who) + 1;
             cprintf('cyan', ['parent of class ', int2str(i), ' became ',...
                 int2str(who), ' start optimizing whole tree' ]);
-            cprintf('red', ['starting make node ' num2str(who), ' a root.']);
-%            makeNewTree(who);
+            if(ted(who) > MaxChild)
+                
+                 cprintf('red', ['starting make node ' num2str(who), ' a root.']);
+                 ted(who)=0;
+                [parent, theta, ted]=makeNewTree(who, parent, theta, ted);
+                root(who)=true;
+            end
 
         end
         
