@@ -12,56 +12,53 @@ updatedTheta = theta;
 while (converged ~=1 && count < 5)
     count = count + 1;
     
-%     levels = zeros(size(parents,1),1);
-%     for i=1:size(parents)
-%         levels(i) = size(ancestorsList{i},1) + 1;
-%     end
-%     
-%     maxlevels = max(levels);
-%     levelNodes = cell(maxlevels,1);
-%     for i=1:maxlevels
-%        levelNodes{i} = []; 
-%     end
-%     
-%     for i=1:size(levels)
-%         levelNodes{levels(i)} =  [levelNodes{levels(i)}; i];
-%     end
+    levels = zeros(size(parents,1),1);
+    for i=1:size(parents)
+        levels(i) = size(ancestorsList{i},1) + 1;
+    end
     
-        
+    maxlevels = max(levels);
+    levelNodes = cell(maxlevels,1);
+    for i=1:maxlevels
+       levelNodes{i} = []; 
+    end
     
+    for i=1:size(levels)
+        levelNodes{levels(i)} =  [levelNodes{levels(i)}; i];
+    end
     
         
     %optimize theta of root node
     updatedTheta(:,root) = fminunc(@theta0_obj1, updatedTheta(:,root), options);
     updated_value = theta0_obj1(updatedTheta(:,root));
     
-%     for level=2:maxlevels
-%        curNodes = levelNodes{level};
-%        parfor node = 1:size(curNodes)
-%            i = curNodes(node);
-%            if curNodes(node) <= K
-%                if(parents(i) == -1)
-%                     continue
-%                end      
-%                ancestors = ancestorsList{i};
-%                if sum(ancestors == root) == 0
-%                  continue
-%                end
-%                updatedTheta(:,i) = fminunc(@(theta2) theta2_obj1(theta2,i),updatedTheta(:,i), options);
-%                updated_value = updated_value + theta2_obj1(updatedTheta(:,i),i);
-%            else
-%                ancestors = ancestorsList{i};
-%                if sum(ancestors == root) == 0
-%                 continue
-%                end
-%                updatedTheta(:,i) = fminunc(@(theta1) theta1_obj1(theta1,i),updatedTheta(:,i), options);
-%                updated_value = updated_value + theta1_obj1(updatedTheta(:,i),i);
-%            end
-%        end
-%     end
+    if (root == K+1)
+    for level=2:maxlevels
+       curNodes = levelNodes{level};
+       parfor node = 1:size(curNodes)
+           i = curNodes(node);
+           if curNodes(node) <= K
+               if(parents(i) == -1)
+                    continue
+               end      
+               ancestors = ancestorsList{i};
+               if sum(ancestors == root) == 0
+                 continue
+               end
+               updatedTheta(:,i) = fminunc(@(theta2) theta2_obj1(theta2,i), updatedTheta(:,i), options);
+               updated_value = updated_value + theta2_obj1(updatedTheta(:,i),i);
+           else
+               ancestors = ancestorsList{i};
+               if sum(ancestors == root) == 0
+                continue
+               end
+               updatedTheta(:,i) = fminunc(@(theta1) theta1_obj1(theta1,i),updatedTheta(:,i), options);
+               updated_value = updated_value + theta1_obj1(updatedTheta(:,i),i);
+           end
+       end
+    end
     
-    
-    
+    else % if (root == K+1)
     
     %optimize theta of super class(interior) nodes
     for i=K+2:size(parents)
@@ -86,6 +83,8 @@ while (converged ~=1 && count < 5)
         updated_value = updated_value + theta2_obj1(updatedTheta(:,i),i);
     end
     
+    end % if (root == K+1)
+    
     difference = updated_value - prev_value;
     
     if(abs(difference) < epsilon)
@@ -95,11 +94,12 @@ while (converged ~=1 && count < 5)
     prev_value = updated_value;
 
 end
+    
+end
 
 
-    function [obj,grad] = theta0_obj1(theta0)
-        global TrainingData;
-        global lambda;
+ function [obj,grad] = theta0_obj1(theta0)
+        global TrainingData lambda ancestorsList;
         obj = 0;
         grad = 0;
         for leafClass=1:K
@@ -123,11 +123,11 @@ end
         end
         obj = obj +  1/2*lambda*(norm(theta0)^2);
         grad = grad + lambda*theta0;
-    end
-
-    function [obj,grad] = theta1_obj1(theta1, superClass)
-        global TrainingData;
-        global lambda;
+ end
+    
+ 
+ function [obj,grad] = theta1_obj1(theta1, superClass)
+        global TrainingData lambda ancestorsList;
         obj = 0;
         grad = 0;
         for leafClass =1:K
@@ -160,8 +160,7 @@ end
     end
 
     function [obj,grad] = theta2_obj1(theta2, leafClass)
-        global TrainingData;
-        global lambda;
+        global TrainingData lambda ancestorsList;
         obj = 0;
         grad = 0;
         
@@ -178,4 +177,3 @@ end
         grad = grad + lambda*theta2;
     end
 
-end
