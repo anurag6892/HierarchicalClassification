@@ -23,6 +23,7 @@ function [parent, theta] = TreeMaker()
         new = false;
         who = -1;
     likelihoodBest = -Inf;
+    lastThetaBest = -1;
         for j=K+1:n   %making new supercatagory under root j for this node.
             if root(j)
                 parent(i) = j;
@@ -78,7 +79,9 @@ function [parent, theta] = TreeMaker()
             cprintf('cyan', ['parent of class ', int2str(i), ' became ',...
                 int2str(who), ' start optimizing whole tree' ]);
             cprintf('red', ['starting make node ' num2str(who), ' a root.']);
-%            makeNewTree(who);
+            if(ted(who) > MaxChild)
+                [parent, theta]=makeNewTree(who);
+            end
 
         end
         
