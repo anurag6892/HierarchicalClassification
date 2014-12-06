@@ -17,7 +17,7 @@ while (converged ~=1 && count < 5)
     
     %optimize theta of super class(interior) nodes
     for i=K+2:size(parents)
-        ancestors = ancestorsList{leafClass};
+        ancestors = ancestorsList{i};
         if sum(ancestors == root) == 0
                 continue
         end
@@ -30,7 +30,7 @@ while (converged ~=1 && count < 5)
         if(parents(i) == -1)
             continue
         end      
-        ancestors = ancestorsList{leafClass};
+        ancestors = ancestorsList{i};
         if sum(ancestors == root) == 0
                 continue
         end
@@ -118,9 +118,6 @@ end
         grad = 0;
         
         ancestors = ancestorsList{leafClass};            
-        if sum(ancestors == root) == 0
-            disp('lol1')    
-        end
         beta = sum(updatedTheta(:,ancestors),2);
         
         obj = obj + sum(log(1 + exp( (-1)*(beta + theta2)'*TrainingData{leafClass}.positive)));
