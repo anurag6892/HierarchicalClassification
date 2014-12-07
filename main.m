@@ -1,13 +1,11 @@
 clear all
+addpath(genpath('~/Softwares/ihog-master'))
+addpath(genpath('~/Softwares/ihog-master/internal'))
+addpath(genpath('~/Softwares/ihog-master/spams'))
+
 %delete(gcp)
 %parpool(6) % Change this to number of cores on your machine
 
-% Change allocation size of parents, ted etc. becuase there will be more 
-%   nodes with multi-level trees
-% optimize tree assumes a clear separation of root node, interior node, and
-%   leaf nodes 
-% Ancestors list also needs to constructed based on root
- 
 global lambda_0  lambda_1  lambda_2  lambda;
 global N K sqrtN;
 global TrainingData;
@@ -15,7 +13,7 @@ global parent;
 
 
 K = 20; % Number of classes
-sqrtN=17;
+sqrtN=12;
 N = sqrtN*sqrtN; % size of feature vectors
 
 % Regularization parameters

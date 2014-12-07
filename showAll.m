@@ -10,7 +10,6 @@ for i=1:m
     imshow(im2double(TrainingData{i}.real{1}),...
         [min(TrainingData{i}.real{1}(:)), max(TrainingData{i}.real{1}(:))]);
     title(num2str(i));
-    
 end
 
 

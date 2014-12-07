@@ -1,4 +1,4 @@
-img = imread('hog_girl.jpeg');
+img = im2double(imread('hog_girl.jpeg'));
 
     [featureVector, hogVisualization] = extractHOGFeatures(img);
 
