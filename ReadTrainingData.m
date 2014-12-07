@@ -55,7 +55,7 @@ for face=4:4
 end
 
 
-for face=4:4
+for face=5:4
     for nose=4:4
         for mouth=4:4
             for eye=4:4

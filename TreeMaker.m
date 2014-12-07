@@ -4,7 +4,7 @@ function [theta] = TreeMaker()
     global ancestorsList;
     global parent;
     Inf = 1000000;
-    MaxChild = 4;
+    MaxChild = 3;
     parent = repmat([-1], K,1);
     theta = zeros(N, 2*K+1); % This should be 2*K + 1 
     ted = zeros(2*K+1,1); 
@@ -29,7 +29,7 @@ function [theta] = TreeMaker()
             if root(j)
                 parent(i) = j;
                 [lastTheta, ~, val] = findBestBeta(i, theta, parent, 1,K+1);
-                likelihood = -val + CRP.ProbabilityNew(ted); %computeLikelihood(i, Beta) +
+                likelihood = -val + CRP.ProbabilityNew(10*K,ted); %computeLikelihood(i, Beta) +
                 disp(['likelihood of class ' , int2str(i),...
                     ' goes under a new supercatagory of root', num2str(j),...
                     ' is ', num2str(likelihood)]);
@@ -47,7 +47,7 @@ function [theta] = TreeMaker()
             if(~root(j))    %for all supercatagoris
                 parent(i) = j;
                 [lastTheta, ~, val] = findBestBeta(i, theta, parent, 0, K+1);
-                likelihood = -val+ CRP.Probability(j, ted);%computeLikelihood(i, Beta) ;
+                likelihood = -val+ CRP.Probability(j, 10*K,ted);%computeLikelihood(i, Beta) ;
                 if likelihood > likelihoodBest
                     who = j;
                     likelihoodBest = likelihood;

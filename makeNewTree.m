@@ -16,14 +16,14 @@ end
 
 
 first = size(parent,1)+1;
-
+all = size(considering, 1);
 for c=1:size(considering,1)
     n = size(parent,1);
     i= considering(c);
     
     parent(i) = root;
     [lastThetaBest, ~, val] = findBestBeta(i, theta, parent, 1, root);
-    likelihoodBest = -val + CRP.ProbabilityNew(ted);
+    likelihoodBest = -val + CRP.ProbabilityNew(all, ted);
     who = n+1;
     
     disp(['NEWWWW  likelihood of class ' , int2str(i), ' goes under a new supercatagory is', num2str(likelihoodBest)]);
@@ -35,7 +35,7 @@ for c=1:size(considering,1)
         
         [lastTheta, ~, val] = findBestBeta(i, theta, parent, 0, root);
         
-        likelihood = -val+ CRP.Probability(j, ted);%computeLikelihood(i, Beta) ;
+        likelihood = -val+ CRP.Probability(j, all, ted);%computeLikelihood(i, Beta) ;
         
         if likelihood > likelihoodBest
             
@@ -62,6 +62,7 @@ for c=1:size(considering,1)
         parent(who) = root;
         theta(:,who) = lastThetaBest/2;
         lastThetaBest = lastThetaBest/2;
+        numSuperClass = numSuperClass + 1;
     else
         ted(who) = ted(who) + 1;
         ted2(who) = ted2(who) + 1;
@@ -101,9 +102,11 @@ for c=1:size(considering,1)
     
 end
 
-parentUp = parent;
-thetaUp = theta;
-tedUp = ted2;
+if(numSuperClass > 1)
+    parentUp = parent;
+    thetaUp = theta;
+    tedUp = ted2;
+end
 % showAll(theta,TrainingData, parent);
 
 

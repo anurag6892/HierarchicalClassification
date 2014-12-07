@@ -14,7 +14,7 @@ global TrainingData;
 global parent;
 
 
-K = 9; % Number of classes
+K = 20; % Number of classes
 sqrtN=17;
 N = sqrtN*sqrtN; % size of feature vectors
 
@@ -24,11 +24,13 @@ lambda_0 = 1;
 lambda_1 = 1;
 lambda_2 = 1;
 
-% LoadTrainingData();
-% save('training', 'TrainingData');
-temp=load('training.mat');
-TrainingData2 = temp.TrainingData;
-ReadTrainingData(TrainingData2);
+LoadFineGrained();
+%LoadTrainingDataWithHog();
+%save('trainingFine', 'TrainingData');
+%load('trainingFine.mat');
+%TrainingData2 = temp.TrainingData;
+% ReadTrainingData(TrainingData2);
+
 theta = TreeMaker();
 showAll(theta, TrainingData, parent);
 testImageSet(theta)

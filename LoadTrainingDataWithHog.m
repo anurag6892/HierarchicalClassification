@@ -26,13 +26,13 @@ end
 
 num = 1;
 TrainingData = cell(K, 1);
-numExamples = 400; %number of example
+numExamples = 1000; %number of example
 
 
 for face=4:4
     for nose=4:4
-        for mouth=1:3
-            for eye=1:3
+        for mouth=1:2
+            for eye=1:2
                 TrainingData{num}.name = dirs{face,nose,mouth,eye,type};
                 TrainingData{num}.size = numExamples;
                 for type=1:2 
@@ -60,8 +60,8 @@ for face=4:4
     end
 end
 
-for face=1:3
-    for nose=1:3
+for face=1:2
+    for nose=1:2
         for mouth=4:4
             for eye=4:4
                 TrainingData{num}.name = dirs{face,nose,mouth,eye,type};

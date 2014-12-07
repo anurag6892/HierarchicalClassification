@@ -35,7 +35,9 @@ beta = sum(theta(:,ancestors),2);
 init_theta = mvnrnd(zeros(1,N), lambda*ones(1,N))';
 
 options = optimoptions(@fminunc,'GradObj','on', 'Display','off','Algorithm','quasi-newton');
-[x,val,~,~,~,~] = fminunc(@theta2_obj, init_theta, options);
+
+
+[x,val] = fminunc(@theta2_obj, init_theta, options);
 lastTheta = x;
 beta = beta + x;
 
