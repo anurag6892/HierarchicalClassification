@@ -7,10 +7,9 @@ figure;
 
 for i=1:m
     subplot(4,m,i);
-    imshow(im2double(reshape(TrainingData{i}.positive(:,1),[sqrtN,sqrtN])),...
-        [min(TrainingData{i}.positive(:)), max(TrainingData{i}.positive(:))]);
-    title(num2str(i));
-    
+    imshow(im2double(TrainingData{i}.real{1}),...
+        [min(TrainingData{i}.real{1}(:)), max(TrainingData{i}.real{1}(:))]);
+    title(num2str(i));  
 end
 
 
