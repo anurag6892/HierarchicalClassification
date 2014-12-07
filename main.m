@@ -31,6 +31,7 @@ TrainingData2 = temp.TrainingData;
 ReadTrainingData(TrainingData2);
 theta = TreeMaker();
 showAll(theta, TrainingData, parent);
+testImageSet(theta)
 
 
 
