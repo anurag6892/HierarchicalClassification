@@ -17,6 +17,8 @@ for i=10818:18962
      if size(im,3)==3
             im = rgb2gray(im);
      end
+     a = cell2mat(struct2cell(annotations(i).bbox))';
+     im  = imcrop(im,[a(1) a(3) a(2)-a(1) a(4)-a(3)]);
      TrainingData{cur.class-184+1}.positive(:,index(cur.class)) = double(extractHOGFeatures(...
             imresize(im2double(im),[30,30])));
      TrainingData{cur.class-184+1}.real{index(cur.class)} = imresize(im2double(im),[30,30]);    
@@ -39,6 +41,8 @@ for i=18962:45541
      if size(im,3)==3
             im = rgb2gray(im);
      end
+      a = cell2mat(struct2cell(annotations(i).bbox))';
+     im  = imcrop(im,[a(1) a(3) a(2)-a(1) a(4)-a(3)]);
      TrainingData{car_class + cur.class-380+1}.positive(:,index(cur.class)) = double(extractHOGFeatures(...
             imresize(im2double(im),[30,30])));
      TrainingData{car_class + cur.class-380+1}.real{index(cur.class)} = imresize(im2double(im),[30,30]);    
@@ -58,6 +62,8 @@ for i=1:20
      if size(im,3)==3
             im = rgb2gray(im);
      end
+      a = cell2mat(struct2cell(annotations(j).bbox))';
+     im  = imcrop(im,[a(1) a(3) a(2)-a(1) a(4)-a(3)]);
      TrainingData{i}.negative(:,index(i)) = double(extractHOGFeatures(...
             imresize(im2double(im),[30,30])));  
      index(i) = index(i) + 1;
@@ -75,6 +81,8 @@ for i=21:40
      if size(im,3)==3
             im = rgb2gray(im);
      end
+      a = cell2mat(struct2cell(annotations(j).bbox))';
+     im  = imcrop(im,[a(1) a(3) a(2)-a(1) a(4)-a(3)]);
      TrainingData{i}.negative(:,index(i)) = double(extractHOGFeatures(...
             imresize(im2double(im),[30,30])));  
      index(i) = index(i) + 1;
@@ -98,8 +106,11 @@ for i=1:size(annotations,2)
      if size(im,3)==3
             im = rgb2gray(im);
      end
+     a = cell2mat(struct2cell(annotations(i).bbox))';
+     im  = imcrop(im,[a(1) a(3) a(2)-a(1) a(4)-a(3)]);
+     
      TestingData{cur.class-184+1}.positive(:,index(cur.class)) = double(extractHOGFeatures(...
-            imresize(im2double(im),[30,30])));  
+            imresize(im2double(im),[40,40])));  
      index(cur.class) = index(cur.class) + 1;
     end
     
@@ -111,15 +122,18 @@ for i=1:size(annotations,2)
      if size(im,3)==3
             im = rgb2gray(im);
      end
+     a = cell2mat(struct2cell(annotations(i).bbox))';
+     im  = imcrop(im,[a(1) a(3) a(2)-a(1) a(4)-a(3)]);
      TestingData{car_class + cur.class-380+1}.positive(:,index(cur.class)) = double(extractHOGFeatures(...
-            imresize(im2double(im),[30,30])));  
+            imresize(im2double(im),[40,40])));  
      index(cur.class) = index(cur.class) + 1;
     end
     
 end
 
 
-
+N=size(TrainingData{1}.positive(:,1),1);
+sqrtN = sqrt(N);
 
 
 
