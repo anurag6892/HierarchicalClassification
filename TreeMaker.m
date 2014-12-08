@@ -81,9 +81,11 @@ function [theta] = TreeMaker()
             if(ted(who) > MaxChild)
                 
                  cprintf('red', ['starting make node ' num2str(who), ' a root.']);
-                 ted(who)=0;
-                [parent, theta, ted]=makeNewTree(who, parent, theta, ted);
-                root(who)=true;
+                ted(who)=0;
+                [parent, theta, ted, change]=makeNewTree(who, parent, theta, ted);
+                if(change)
+                    root(who)=true;
+                end
             end
 
         end

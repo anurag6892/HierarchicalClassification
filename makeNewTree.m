@@ -1,10 +1,11 @@
-function [ parentUp, thetaUp, tedUp ] = makeNewTree(root, parent, theta, ted2) %TODO they don't go all under one supercatagory
+function [ parentUp, thetaUp, tedUp, change ] = makeNewTree(root, parent, theta, ted2) %TODO they don't go all under one supercatagory
 
 global K ancestorsList;
 
 parentUp = parent;
 thetaUp = theta;
 tedUp = ted2;
+change = false;
 
 numSuperClass = 0;
 ted = zeros(2*K+1,1);
@@ -110,6 +111,7 @@ if(numSuperClass > 1)
     parentUp = parent;
     thetaUp = theta;
     tedUp = ted2;
+    change = true;
 end
 % showAll(theta,TrainingData, parent);
 
