@@ -7,8 +7,7 @@ figure;
 
 for i=1:m
     subplot(4,m,i);
-    imshow(im2double(reshape(TrainingData{i}.positive(:,1),[sqrtN,sqrtN])),...
-        [min(TrainingData{i}.positive(:,1)), max(TrainingData{i}.positive(:,1))]);
+    imshow(im2double(reshape(TrainingData{i}.real{1},[30,30])));
     title(num2str(i));
 end
 
@@ -51,13 +50,13 @@ end
 
 figure;
 
-for i=1:m
-    for j=1:m
-    subplot(m,m,(i-1)*m+j);
-    imshow(im2double(reshape(theta(:,i)+theta(:,j),[sqrtN,sqrtN])));
-    end
-    
-end
+% for i=1:m
+%     for j=1:m
+%     subplot(m,m,(i-1)*m+j);
+%     imshow(im2double(reshape(theta(:,i)+theta(:,j),[sqrtN,sqrtN])));
+%     end
+%     
+% end
 
 for i=1:size(parent)
     if parent(i) == -1
