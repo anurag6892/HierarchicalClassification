@@ -7,8 +7,8 @@ figure;
 
 for i=1:m
     subplot(4,m,i);
-    imshow(im2double(TrainingData{i}.real{1}),...
-        [min(TrainingData{i}.real{1}(:)), max(TrainingData{i}.real{1}(:))]);
+    imshow(im2double(reshape(TrainingData{i}.positive(:,1),[sqrtN,sqrtN])),...
+        [min(TrainingData{i}.positive(:,1)), max(TrainingData{i}.positive(:,1))]);
     title(num2str(i));
 end
 
@@ -22,26 +22,40 @@ for i=1:m
     end
     beta(:,i) = sum(theta(:,ancestors),2);
 end
+
 Min = min(min(beta(:)), min(theta(:)));
 Max = max(max(beta(:)), max(theta(:)));
 
 for i=1:m  
     subplot(4,m,m+i);
-    imshow(im2double(reshape(beta(:,i),[sqrtN,sqrtN])),...
-        [Min, Max]);
+    im = im2double(reshape(beta(:,i),[sqrtN,sqrtN]));
+%     im=repmat(im,[1,1,3])
+%     feat = features(im,1);
+%     ihog = invertHOG(feat);
+    imshow(im);
 end
 
 
 
 for i=1:m
     subplot(4,m,2*m+i);
-    imshow(im2double(reshape(theta(:,i),[sqrtN,sqrtN])), [Min, Max]);
+    imshow(im2double(reshape(theta(:,i),[sqrtN,sqrtN])));
     
 end
 
 for i=m+1:2*m
     subplot(4,m,2*m+i);
-    imshow(im2double(reshape(theta(:,i),[sqrtN,sqrtN])), [Min, Max]);
+    imshow(im2double(reshape(theta(:,i),[sqrtN,sqrtN])));
+    
+end
+
+figure;
+
+for i=1:m
+    for j=1:m
+    subplot(m,m,(i-1)*m+j);
+    imshow(im2double(reshape(theta(:,i)+theta(:,j),[sqrtN,sqrtN])));
+    end
     
 end
 
