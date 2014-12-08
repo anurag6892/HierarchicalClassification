@@ -5,9 +5,15 @@ n=size(theta,2);
 m=K;
 figure;
 
+% for i=1:m
+%     subplot(4,m,i);
+%     imshow(im2double(reshape(TrainingData{i}.real{1},[30,30])));
+%     title(num2str(i));
+% end
+
 for i=1:m
     subplot(4,m,i);
-    imshow(im2double(reshape(TrainingData{i}.real{1},[30,30])));
+    imshow(im2double(reshape(TrainingData{i}.positive(:,1),[sqrtN,sqrtN])));
     title(num2str(i));
 end
 

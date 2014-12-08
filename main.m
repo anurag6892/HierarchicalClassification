@@ -12,8 +12,8 @@ global TrainingData;
 global parent;
 
 
-K = 40; % Number of classes
-sqrtN=12;
+K = 8; % Number of classes
+sqrtN=17;
 N = sqrtN*sqrtN; % size of feature vectors
 
 % Regularization parameters
@@ -22,12 +22,12 @@ lambda_0 = 1;
 lambda_1 = 1;
 lambda_2 = 1;
 
-LoadFineGrained();
+%LoadFineGrained();
 %LoadTrainingDataWithHog();
 %save('trainingFine', 'TrainingData');
-%temp=load('training.mat');
-%TrainingData2 = temp.TrainingData;
-%ReadTrainingData(TrainingData2);
+temp=load('training.mat');
+TrainingData2 = temp.TrainingData;
+ReadTrainingData(TrainingData2);
 
 theta = TreeMaker();
 showAll(theta, TrainingData, parent);
