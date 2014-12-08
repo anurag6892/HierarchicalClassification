@@ -1,6 +1,87 @@
 function [ output_args ] = LoadFineGrained( input_args )
 global TrainingData K N sqrtN;
 
+load('train_annos.mat');
+
+index = ones(569,1);
+
+for i=10818:18962
+    cur = annotations(i);
+    if (cur.class >=184 && cur.class < 204)
+     if (exist(cur.rel_path,'file') ~= 2)
+         continue
+     end
+     im=imread(cur.rel_path);
+     if size(im,3)==3
+            im = rgb2gray(im);
+     end
+     TrainingData{cur.class-184+1}.positive(:,index(cur.class)) = double(extractHOGFeatures(...
+            imresize(im2double(im),[30,30])));
+     TrainingData{cur.class-184+1}.real{index(cur.class)} = imresize(im2double(im),[30,30]);    
+     index(cur.class) = index(cur.class) + 1;
+    end
+end
+
+
+
+car_class = size(TrainingData,2)
+
+
+for i=18962:45541
+    cur = annotations(i);
+    if (cur.class >=380 && cur.class < 400)
+     if (exist(cur.rel_path,'file') ~= 2)
+        clea continue
+     end
+     im=imread(cur.rel_path);
+     if size(im,3)==3
+            im = rgb2gray(im);
+     end
+     TrainingData{car_class + cur.class-380+1}.positive(:,index(cur.class)) = double(extractHOGFeatures(...
+            imresize(im2double(im),[30,30])));
+     TrainingData{car_class + cur.class-380+1}.real{index(cur.class)} = imresize(im2double(im),[30,30]);    
+     index(cur.class) = index(cur.class) + 1;
+    end
+end
+
+index = ones(569,1);
+
+
+for i=1:20
+    while index(i) <=size(TrainingData{i}.positive,2)
+    j = floor(rand*size(annotations,2)) + 1;
+    cur = annotations(j);
+    if ((cur.domain_index ~= 3) && (exist(cur.rel_path,'file') == 2))
+     im=imread(cur.rel_path);
+     if size(im,3)==3
+            im = rgb2gray(im);
+     end
+     TrainingData{i}.negative(:,index(i)) = double(extractHOGFeatures(...
+            imresize(im2double(im),[30,30])));  
+     index(i) = index(i) + 1;
+    end
+    end
+end
+
+
+for i=21:40
+    while index(i) <=size(TrainingData{i}.positive,2)
+    j = floor(rand*size(annotations,2)) + 1;
+    cur = annotations(j);
+    if ((cur.domain_index ~= 4) && (exist(cur.rel_path,'file') == 2))
+     im=imread(cur.rel_path);
+     if size(im,3)==3
+            im = rgb2gray(im);
+     end
+     TrainingData{i}.negative(:,index(i)) = double(extractHOGFeatures(...
+            imresize(im2double(im),[30,30])));  
+     index(i) = index(i) + 1;
+    end
+    end
+end
+
+
+
 numExamples = 600;
 num = 1;
 for i=11:30
