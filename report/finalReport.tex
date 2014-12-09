@@ -21,7 +21,7 @@
 
 % Pages are numbered in submission mode, and unnumbered in camera-ready
 %\ifcvprfinal\pagestyle{empty}\fi
-\setcounter{page}{4321}
+\setcounter{page}{1}
 \begin{document}
 
 %%%%%%%%% TITLE
@@ -107,9 +107,16 @@ using standard convex optimization solvers.
  
  
  \subsection{Learning a Hierarchical Classification Model}
- 
- 
-  
+ In our framework, a hierarchical tree structure is used to model sharing of parameters between 
+ visually related classes. Each node in the tree has a model parameter, a vector of length $D$ 
+ associated with it.  Let $ \theta = \{ \theta_{1}, \theta_{2},.....,\theta_{n}\} $ denote the model parameters 
+ of all the nodes in the tree, where $n$ is the number of nodes starting from the root node to the all the leaf nodes.
+ The leaf nodes correspond to the $K$ object categories or classes. The parameters for a particular class, say $k$,
+ is the sum of the parameters of all the nodes, say $i_{1}, i_{2}, ..., i_{l} $, along the path from the leaf node
+ corresponding to that class up until the root node of the tree:
+ \begin{equation}
+ \beta^{(k)} = \theta_{i_{1}} +  \theta_{i_{2}} + ...... + \theta_{i_{l}}
+  \end{equation} 
   
 {\small
 \bibliographystyle{ieee}
