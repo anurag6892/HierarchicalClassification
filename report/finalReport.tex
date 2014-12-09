@@ -19,6 +19,8 @@
 \def\cvprPaperID{****} % *** Enter the CVPR Paper ID here
 \def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
 
+\renewcommand{\arraystretch}{1.4}
+
 % Pages are numbered in submission mode, and unnumbered in camera-ready
 %\ifcvprfinal\pagestyle{empty}\fi
 \setcounter{page}{1}
@@ -148,10 +150,49 @@ E = Loss(Y,X,\beta) + \frac{\lambda_{0}}{2} \|\theta_{0} \|^{2} +
  according to the tree structure. Here there are $k_{j}$ nodes in level $j$ and 
  $\theta_{1j}, \theta_{2j},.....,\theta_{k_{j}j}$ are the parameters of nodes in level $j$.
 
-\subsection{Learning the tree structures}
+\subsection{Learning the tree structure}
+If we are given the tree structure that indicates the relation between different classes, then the 
+learning algorithm only needs to optimize for the loss in equation \ref{hier-loss}. However, as 
+discussed in \cite{Ruslan}, learning the tree structure dynamically based on the input classes and training data
+could lead to better results in object classification. We adopt the algorithm used in \cite{Ruslan} to multilevel trees
+and fine-grained partitioning. In \cite{Ruslan}, the author use a fixed number of levels i.e 3 in the tree and use
+a non-parametric Chinese Restaurant Process Prior(CRP) to model the position of a class in the tree. Although this simple
+CRP prior allows one to have unknown and potentially unbounded number of groups of object classes, this is can only be
+used for two-level trees. For trees which have a fixed number of levels more than 3, one could use a nested CRP prior \cite{nestedCRP}.
+Since this approach has the drawback of limiting the tree to a fixed number of levels, we use a simple extension(modified-CRP) of the
+CRP prior used in \cite{Ruslan} to allow the flexibility of  having different depths at different parts of the tree.    
 
+A new class could go into one of the existing super-categories or create a new super-category. A new super-category 
+can be attached to any node which doesn't have any children that are leaf nodes. That is, we allow the parent of a new
+super-category to be any node that is not itself a super-category that has leaf nodes, which correspond to classes, as children.
+By following the procedure in \cite{Ruslan},  for each possible position of the new class we calculate a likelihood term and 
+modified-CRP prior term. The position of the new class will be the one that maximizes the sum of likelihood term and  prior term. 
 
-
+Let $i$ denote the node number of the leaf node corresponding to the new class.   
+To calculate the likelihood at a possible position in the tree, we find the model parameter $\theta_{i}$ of the leaf node, 
+that maximizes the log likelihood of the training data at that position. This likelihood will depend on the position in the tree, when 
+we choose a position it means that we include the parameters of all the nodes that are ancestors of the leaf node $i$ at that position. 
+If the position corresponds to a category that is visually dissimilar to the new class, then the best we can with $\theta_{i}$ with still 
+result in a lower likelihood term. If the the category is visually similar to the new class, we can achieve a far better fit and the likelihood
+term goes up. We have observed that the maximum of the likelihood over the model parameter $\theta_{i}$ is greatly affected by the position
+ we choose for the leaf node. In addition to the likelihood term, the modified-CRP prior term favors super-categories that have a large number of 
+ leaf nodes or class under them. The modified-CRP prior is given by:
+ 
+ \begin{displaymath}
+ p(z=j) = \left \{
+	    \begin{array}{lr}
+ 		\frac{m_{j}}{n+\gamma*m} & : \text{$j$ is old} \\
+		\frac{\gamma}{n+\gamma*m} & : \text{$j$ is new}
+	   \end{array}
+	  \right.
+ \end{displaymath}  
+where $n$ is the total number of leaf nodes, $m_{j}$
+is the number of leaf nodes under super-category $j$,
+$\gamma$ is the concentration parameter that controls the probability of creating a new super-category,
+$m$ is the total number of positions of new super-categories in the tree. $m$ is equal to number of nodes
+in the tree that have only super-categories as children. In other words, $m$ is the cardinality of the set that 
+includes the root node as well all nodes that are not leaf nodes or parents of leaf nodes. It can be easily verified that 
+this defines a valid probability distribution over the choice $z$ of possible positions in the tree where the new class can be placed.
 {\small
 \bibliographystyle{ieee}
 \bibliography{finalReport}
