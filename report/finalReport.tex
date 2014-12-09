@@ -41,6 +41,11 @@ Massachusetts Institute of Technology\\
 {\tt\small anurag\_m@mit.edu}
 }
 
+% TODO
+% spell check
+% bold text for variables
+
+
 \maketitle
 %\thispagestyle{empty}
 
@@ -111,16 +116,45 @@ using standard convex optimization solvers.
  visually related classes. Each node in the tree has a model parameter, a vector of length $D$ 
  associated with it.  Let $ \theta = \{ \theta_{1}, \theta_{2},.....,\theta_{n}\} $ denote the model parameters 
  of all the nodes in the tree, where $n$ is the number of nodes starting from the root node to the all the leaf nodes.
- The leaf nodes correspond to the $K$ object categories or classes. The parameters for a particular class, say $k$,
+ The leaf nodes correspond to the $K$ object categories or classes. The parameters for a particular class $k$
  is the sum of the parameters of all the nodes, say $i_{1}, i_{2}, ..., i_{l} $, along the path from the leaf node
  corresponding to that class up until the root node of the tree:
- \begin{equation}
+ \begin{equation} \label{beta-theta-rel}
  \beta^{(k)} = \theta_{i_{1}} +  \theta_{i_{2}} + ...... + \theta_{i_{l}}
   \end{equation} 
-  
+ We place zero-mean spherical Gaussian priors on the parameters of each node. However, the 
+ covariance matrix is dependent on the level of a particular node in the tree i.e all the nodes at
+ a particular level have the same prior parameters.
+ \begin{equation}
+ p(\theta_{i})  = N(0,\frac{1}{\lambda_{l}}I) 
+\end{equation}   
+where node $i$ is at level $l$ in the tree. The root node has level 0 and the level increases as 
+we move towards the leaf nodes.
+
+With this modification in the way the model parameters for classes are related,  the hierarchical 
+learning problem can be formulated as minimizing the log posterior or equivalently the loss function 
+with respect to $\beta$:
+\begin{equation} \label{hier-loss}
+\begin{split}
+E = Loss(Y,X,\beta) + \frac{\lambda_{0}}{2} \|\theta_{0} \|^{2} +
+\sum_{i=1}^{k_{1}} \frac{\lambda_{1}}{2} \|\theta_{i1} \|^{2} & \\
++ \sum_{i=1}^{k_{2}} \frac{\lambda_{2}}{2} \|\theta_{i2} \|^{2} +
+...... +
+\sum_{i=1}^{k_{l}} \frac{\lambda_{l}}{2} \|\theta_{il} \|^{2} &
+\end{split}
+\end{equation} 
+ where $Loss(Y,X,\beta)$ is the loss function as explained in the previous section
+ but with the additional constraint that $\beta$ satisfies  equation \ref{beta-theta-rel} 
+ according to the tree structure. Here there are $k_{j}$ nodes in level $j$ and 
+ $\theta_{1j}, \theta_{2j},.....,\theta_{k_{j}j}$ are the parameters of nodes in level $j$.
+
+\subsection{Learning the tree structures}
+
+
+
 {\small
 \bibliographystyle{ieee}
-\bibliography{egbib}
+\bibliography{finalReport}
 }
 
 \end{document}
