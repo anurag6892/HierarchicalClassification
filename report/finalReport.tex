@@ -1,0 +1,126 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+\usepackage{cvpr}
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+% Include other packages here, before hyperref.
+
+% If you comment hyperref and then uncomment it, you should delete
+% egpaper.aux before re-running latex.  (Or just hit 'q' on the first latex
+% run, let it finish, and you should be clear).
+\usepackage[breaklinks=true,bookmarks=false]{hyperref}
+
+\cvprfinalcopy % *** Uncomment this line for the final submission
+
+\def\cvprPaperID{****} % *** Enter the CVPR Paper ID here
+\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
+
+% Pages are numbered in submission mode, and unnumbered in camera-ready
+%\ifcvprfinal\pagestyle{empty}\fi
+\setcounter{page}{1}
+\begin{document}
+
+%%%%%%%%% TITLE
+\title{Hierarchical Multiclass Object Classification }
+
+\author{Fereshte Khani\\ 
+Massachusetts Institute of Technology\\
+{\tt\small fereshte@mit.edu}
+% For a paper whose authors are all at the same institution,
+% omit the following lines up until the closing ``}''.
+% Additional authors and addresses can be added with ``\and'',
+% just like the second author.
+% To save space, use either the email address or home page, not both
+\and
+Anurag Mukkara\\
+Massachusetts Institute of Technology\\
+{\tt\small anurag\_m@mit.edu}
+}
+
+\maketitle
+%\thispagestyle{empty}
+
+%%%%%%%%% ABSTRACT
+\begin{abstract}
+
+Human can use similarity between objects in order to recognize rare objects. They also make many abstract concepts when they see some objects very often. Interestingly, a large part of brain is associated with common classes like faces rather than rare objects like Ostrich.
+In our work we want to propose a model that has four mentioned characteristics. 1. Use more resources for categories that have many examples and less resources for categories that have few examples. 2. Has the ability recognize objects that it has never seen before, but can be made by combining previously seen objects. 3. Objects with few examples can borrow statistical strength from similar objects with many examples. 4. Models that have lot of sharing between model parameters of different classes should be favored.
+
+\end{abstract}
+
+%%%%%%%%% BODY TEXT
+\section{Introduction}
+
+\section{Previous work}
+
+
+\section{Hierarchical Classification Model}
+
+\subsection{Learning Independent Classification Models}
+
+Consider a classification problem where we observe a dataset $D$ of labelled  training examples. 
+Each example belongs belongs to one $K$ classes(eg. 40 object categories). The dataset $D$
+has $n_{k}$ labeled examples for for each class $k  \in {1,2,....,K} $. We $x_{i}^{(k)} \in R^{D} $ 
+be the input feature vector of length D for the $i^{th}$ training example of class $k$ and 
+$y_{i}^{(k)}$ be the corresponding class label. $ y_{i}^{k} = 1 $ indicates that the $i^{th}$ training example 
+ is a positive example for class $K$ and  $ y_{i}^{k} = -1 $ indicates that the $i^{th}$ training example 
+ is a negative example for class $K$.
+ 
+ For a binary classification problem we can use a simple logistic regression model. In particular, 
+ for each class $k$, the probability of a positive instance can be modeled as: 
+ \begin{equation}
+ p(y_{i}^{(k)} = 1 | \beta^{(k)} )  = \frac { \exp( \beta^{(k)^{T}}  x_{i}^{(k)})  }{  1 + \exp(\beta^{(k)^{T}}  x_{i}^{(k)} ) } 
+ \end{equation}
+  where $k$ ranges over the $K$ classes and $ \beta^{k}  \in R^{D} $ is the unknown model parameter of length D 
+  for class k. 
+  In addition, we place a zero-mean spherical Gaussian prior over each model parameter  $  \beta^{k} $:
+  \begin{equation}
+	p(\beta)  = \prod_{k=1}^{K} p(\beta^{(k)}) = \prod_{k=1}^{K} N(0, \frac{1}{\lambda})
+  \end{equation}
+ where $N(\mu, \Sigma)$ indicates a Gaussian probability distribution with mean $\mu$ and covariance $\Sigma$.
+ Here, $\lambda$ is the prior parameter.  With this modeling framework, the log posterior distribution of the unknown 
+ parameters can be expresses as 
+ \begin{equation}
+	\log p(\beta | D) \propto \sum_{k=1}^{K} \Big[ \, \ \sum_{i=1}^{n_{k}} \log p(y_{i}^{(k)} | x_{i}^{(k)}, \beta^{(k)}) \ + \ \log p(\beta^{(k)}) \ \Big] \,
+\end{equation}
+ Maximizing the log posterior(or finding the MAP estimate ) over the unknown model parameters $\beta$  is  equivalent to 
+ minimizing the probabilistic loss function with quadratic regularization terms:
+ \begin{equation}
+ 	E = \sum_{k=1}^{K}  \Big[ \, \ \sum_{i=1}^{n_{k}} Loss(y_{i}^{(k)}, x_{i}^{(k)}, \beta^{(k)}) + \frac{\lambda}{2} \| \beta^{(k)}) \|^{2} \ \Big] \,
+ \end{equation} 
+ where the probabilistic loss function is given by:
+ \begin{equation}
+ %Loss(y_{i}^{(k)},  x_{i}^{(k)},  \beta^{(k)})  =  - \sum_{j \in {-1,1} } I\{y_{i}^{(k)}=j\} \log p(y_{i}^{(k)}=j | x_{i}^{(k)},\beta^{(k)})
+ Loss(y,  x,  \beta)  =  - \sum_{j \in {-1,1} } I\{y=j\} \log p(y=j | x,\beta)
+\end{equation} 
+One important property of the loss function is that it is convex and hence can be efficiently optimized
+using standard convex optimization solvers.
+ 
+ The main drawback of this formulation is that all the $K$ classes are treated as unrelated entities and hence 
+ do not share any model parameters. In fact, it is observed that the objective function decomposes into 
+ $K$ sub-problems, each of which is a binary classification problem that can be trained independently 
+ using the training data for that particular class.
+ 
+ 
+ \subsection{Learning a Hierarchical Classification Model}
+ In our framework, a hierarchical tree structure is used to model sharing of parameters between 
+ visually related classes. Each node in the tree has a model parameter, a vector of length $D$ 
+ associated with it.  Let $ \theta = \{ \theta_{1}, \theta_{2},.....,\theta_{n}\} $ denote the model parameters 
+ of all the nodes in the tree, where $n$ is the number of nodes starting from the root node to the all the leaf nodes.
+ The leaf nodes correspond to the $K$ object categories or classes. The parameters for a particular class, say $k$,
+ is the sum of the parameters of all the nodes, say $i_{1}, i_{2}, ..., i_{l} $, along the path from the leaf node
+ corresponding to that class up until the root node of the tree:
+ \begin{equation}
+ \beta^{(k)} = \theta_{i_{1}} +  \theta_{i_{2}} + ...... + \theta_{i_{l}}
+  \end{equation} 
+  
+{\small
+\bibliographystyle{ieee}
+\bibliography{egbib}
+}
+
+\end{document}
