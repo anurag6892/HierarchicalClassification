@@ -193,6 +193,32 @@ $m$ is the total number of positions of new super-categories in the tree. $m$ is
 in the tree that have only super-categories as children. In other words, $m$ is the cardinality of the set that 
 includes the root node as well all nodes that are not leaf nodes or parents of leaf nodes. It can be easily verified that 
 this defines a valid probability distribution over the choice $z$ of possible positions in the tree where the new class can be placed.
+
+We use same model-fitting algorithm described in \cite{Ruslan} with modifications to CRP-prior term and tree structure as described above.
+Basically, the algorithm alternates between deciding the position in the tree of a new class and optimizing the model parameters of all the nodes
+in the tree for a given tree structure.  This alternating procedure will reach a local minima of the loss function 
+described in equation \ref{hier-loss}. Since the loss function is convex, this is also the global minima of the loss function. 
+For optimizing the model parameters for a fixed tree structure , we use iterative coordinate-descend procedure.
+Since the parameters of all the nodes at any given level of the tree are independent of each other, we parallelize the loss minimization 
+routine for these nodes. This leads to significant reduction in time taken to learn the model.
+
+We also use a simple heuristic to maintain a fine-partitioning of the classes among into among super-categories. 
+We need to avoid many leaf nodes accumulating under the 
+same super-category as this would lead to a very coarse-grain partitioning of the classes.  So, whenever the number of leaf nodes under a 
+super-category goes above a certain threshold $maxChild$, we break down the subtree under that node to create
+ a more fine-grained partitioning.  To do this we run the entire optimization algorithm described above on the classes that were originally under this
+ super-category. Basically, we consider the node corresponding to the super-category as a root node and keep adding new leaf nodes 
+ to form a tree under this root node. In most cases, the $maxChild$ number of classes that previously shared the same parent are dividing
+ several finer super-categories and have different parents.  In the rare case when the classes are very similar to each other, this process will add
+ redundant to the tree. We identify this pathology and remove the redundant node while appropriately modifying the modle parameters of the 
+ relevant nodes. The parameter $maxChild$ can be configured to control the degree of fine-grained partitioning of classes. A lower value
+ of $maxChild$ leads to very fine-grained partitions whereas a higher value of $maxChild$ results in coarser partitions. We found that 
+ a value of four results in best results. 
+ 
+
+ 
+
+
 {\small
 \bibliographystyle{ieee}
 \bibliography{finalReport}
