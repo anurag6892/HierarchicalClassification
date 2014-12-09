@@ -25,22 +25,20 @@
 \begin{document}
 
 %%%%%%%%% TITLE
-\title{Hierarchical Multiclass Object Classificaiton }
+\title{Hierarchical Multiclass Object Classification }
 
-\author{First Author\\
-Institution1\\
-Institution1 address\\
-{\tt\small firstauthor@i1.org}
+\author{Fereshte Khani\\ 
+Massachusetts Institute of Technology\\
+{\tt\small fereshte@mit.edu}
 % For a paper whose authors are all at the same institution,
 % omit the following lines up until the closing ``}''.
 % Additional authors and addresses can be added with ``\and'',
 % just like the second author.
 % To save space, use either the email address or home page, not both
 \and
-Second Author\\
-Institution2\\
-First line of institution2 address\\
-{\tt\small secondauthor@i2.org}
+Anurag Mukkara\\
+Massachusetts Institute of Technology\\
+{\tt\small anurag\_m@mit.edu}
 }
 
 \maketitle
@@ -62,7 +60,57 @@ In our work we want to propose a model that has four mentioned characteristics. 
 
 \section{Hierarchical Classification Model}
 
+\subsection{Learning Independent Classification Models}
 
+Consider a classification problem where we observe a dataset $D$ of labelled  training examples. 
+Each example belongs belongs to one $K$ classes(eg. 40 object categories). The dataset $D$
+has $n_{k}$ labeled examples for for each class $k  \in {1,2,....,K} $. We $x_{i}^{(k)} \in R^{D} $ 
+be the input feature vector of length D for the $i^{th}$ training example of class $k$ and 
+$y_{i}^{(k)}$ be the corresponding class label. $ y_{i}^{k} = 1 $ indicates that the $i^{th}$ training example 
+ is a positive example for class $K$ and  $ y_{i}^{k} = -1 $ indicates that the $i^{th}$ training example 
+ is a negative example for class $K$.
+ 
+ For a binary classification problem we can use a simple logistic regression model. In particular, 
+ for each class $k$, the probability of a positive instance can be modeled as: 
+ \begin{equation}
+ p(y_{i}^{(k)} = 1 | \beta^{(k)} )  = \frac { \exp( \beta^{(k)^{T}}  x_{i}^{(k)})  }{  1 + \exp(\beta^{(k)^{T}}  x_{i}^{(k)} ) } 
+ \end{equation}
+  where $k$ ranges over the $K$ classes and $ \beta^{k}  \in R^{D} $ is the unknown model parameter of length D 
+  for class k. 
+  In addition, we place a zero-mean spherical Gaussian prior over each model parameter  $  \beta^{k} $:
+  \begin{equation}
+	p(\beta)  = \prod_{k=1}^{K} p(\beta^{(k)}) = \prod_{k=1}^{K} N(0, \frac{1}{\lambda})
+  \end{equation}
+ where $N(\mu, \Sigma)$ indicates a Gaussian probability distribution with mean $\mu$ and covariance $\Sigma$.
+ Here, $\lambda$ is the prior parameter.  With this modeling framework, the log posterior distribution of the unknown 
+ parameters can be expresses as 
+ \begin{equation}
+	\log p(\beta | D) \propto \sum_{k=1}^{K} \Big[ \, \ \sum_{i=1}^{n_{k}} \log p(y_{i}^{(k)} | x_{i}^{(k)}, \beta^{(k)}) \ + \ \log p(\beta^{(k)}) \ \Big] \,
+\end{equation}
+ Maximizing the log posterior(or finding the MAP estimate ) over the unknown model parameters $\beta$  is  equivalent to 
+ minimizing the probabilistic loss function with quadratic regularization terms:
+ \begin{equation}
+ 	E = \sum_{k=1}^{K}  \Big[ \, \ \sum_{i=1}^{n_{k}} Loss(y_{i}^{(k)}, x_{i}^{(k)}, \beta^{(k)}) + \frac{\lambda}{2} \| \beta^{(k)}) \|^{2} \ \Big] \,
+ \end{equation} 
+ where the probabilistic loss function is given by:
+ \begin{equation}
+ %Loss(y_{i}^{(k)},  x_{i}^{(k)},  \beta^{(k)})  =  - \sum_{j \in {-1,1} } I\{y_{i}^{(k)}=j\} \log p(y_{i}^{(k)}=j | x_{i}^{(k)},\beta^{(k)})
+ Loss(y,  x,  \beta)  =  - \sum_{j \in {-1,1} } I\{y=j\} \log p(y=j | x,\beta)
+\end{equation} 
+One important property of the loss function is that it is convex and hence can be efficiently optimized
+using standard convex optimization solvers.
+ 
+ The main drawback of this formulation is that all the $K$ classes are treated as unrelated entities and hence 
+ do not share any model parameters. In fact, it is observed that the objective function decomposes into 
+ $K$ sub-problems, each of which is a binary classification problem that can be trained independently 
+ using the training data for that particular class.
+ 
+ 
+ \subsection{Learning a Hierarchical Classification Model}
+ 
+ 
+  
+  
 {\small
 \bibliographystyle{ieee}
 \bibliography{egbib}
