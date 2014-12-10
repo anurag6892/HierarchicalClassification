@@ -17,22 +17,23 @@ function accuracy = testImageSet(theta)
 %        end
 %        count
 %     end
-temp =0;
+   temp =0;
    for i=1:size(TestingData,2)
-       count = zeros(1,40);
+       %count = zeros(1,40);
        for j=1:size(TestingData{i}.positive, 2)
         predictedClass = testImage(TestingData{i}.positive(:,j), theta);
-        count(predictedClass) = count(predictedClass) + 1;
-        if (floor((predictedClass-1)/20) == floor((i-1)/20))
+        %count(predictedClass) = count(predictedClass) + 1;
+        if (predictedClass == i)
+        %if (floor((predictedClass-1)/20) == floor((i-1)/20))
            correctExamples = correctExamples + 1;
         end
         totalExamples = totalExamples + 1;
        end
-       count;
-       [a,pos] = max(count)
-       if (pos == i) 
-           temp = temp + 1;
-       end
+       %count;
+       %[a,pos] = max(count)
+       %if (pos == i) 
+       %    temp = temp + 1;
+       %end
     end
 
     temp

@@ -41,11 +41,6 @@ Massachusetts Institute of Technology\\
 {\tt\small anurag\_m@mit.edu}
 }
 
-% TODO
-% spell check
-% bold text for variables
-
-
 \maketitle
 %\thispagestyle{empty}
 
@@ -53,12 +48,18 @@ Massachusetts Institute of Technology\\
 \begin{abstract}
 
 Human can use similarity between objects in order to recognize rare objects. They also make many abstract concepts when they see some objects very often. Interestingly, a large part of brain is associated with common classes like faces rather than rare objects like Ostrich.
-In our work we want to propose a model that has four mentioned characteristics. 1. Use more resources for categories that have many examples and less resources for categories that have few examples. 2. Has the ability recognize objects that it has never seen before, but can be made by combining previously seen objects. 3. Objects with few examples can borrow statistical strength from similar objects with many examples. 4. Models that have lot of sharing between model parameters of different classes should be favored.
+In our work we want to propose a model that has four mentioned characteristics.1. Use more resources for categories that have many examples and less resources for categories that have few examples, 2. Has the ability recognize objects that it has never seen before, but can be made by combining previously seen objects, 3. Objects with few examples can borrow statistical strength from similar objects with many examples, 4. Models that have lot of sharing between model parameters of different classes should be favored.
 
 \end{abstract}
 
 %%%%%%%%% BODY TEXT
 \section{Introduction}
+
+We have a hierarchical based abstract concepts for object around us. We make a bigger hierarachical concepts for object that we encounter more often. For example, if you ask a person about furniture they can catagorized it by chair, desk, sofa, table, etc. and then for chair it goes like office chair, armchair, rockchair, or even wheelchair. These sub catagories are related to each other visually. In this work we try to propse a model that make more abstract concepts when there are lots of simillar classes. It also try to share many parameters between them so having lots of example for the common one help recognizing the rare one.
+
+We all make a model for every concept and when encounter a new object we try to check to which concept it matches more. All learning algorithm try to add aditional information to the problem to avoid overfitting. They usually use Occaum-razor to have as simple as possible model. Here we want to want to change this regulizatoin in a way that if a model use previously learned objects it can have more complex shape. By this structure Models that have lot of sharing between model parameters of different classes should be favored.
+
+We make a tree from all classes. In this framework every class is a leaf in the tree (figure 1) 
 
 \section{Previous work}
 
@@ -116,45 +117,16 @@ using standard convex optimization solvers.
  visually related classes. Each node in the tree has a model parameter, a vector of length $D$ 
  associated with it.  Let $ \theta = \{ \theta_{1}, \theta_{2},.....,\theta_{n}\} $ denote the model parameters 
  of all the nodes in the tree, where $n$ is the number of nodes starting from the root node to the all the leaf nodes.
- The leaf nodes correspond to the $K$ object categories or classes. The parameters for a particular class $k$
+ The leaf nodes correspond to the $K$ object categories or classes. The parameters for a particular class, say $k$,
  is the sum of the parameters of all the nodes, say $i_{1}, i_{2}, ..., i_{l} $, along the path from the leaf node
  corresponding to that class up until the root node of the tree:
- \begin{equation} \label{beta-theta-rel}
+ \begin{equation}
  \beta^{(k)} = \theta_{i_{1}} +  \theta_{i_{2}} + ...... + \theta_{i_{l}}
   \end{equation} 
- We place zero-mean spherical Gaussian priors on the parameters of each node. However, the 
- covariance matrix is dependent on the level of a particular node in the tree i.e all the nodes at
- a particular level have the same prior parameters.
- \begin{equation}
- p(\theta_{i})  = N(0,\frac{1}{\lambda_{l}}I) 
-\end{equation}   
-where node $i$ is at level $l$ in the tree. The root node has level 0 and the level increases as 
-we move towards the leaf nodes.
-
-With this modification in the way the model parameters for classes are related,  the hierarchical 
-learning problem can be formulated as minimizing the log posterior or equivalently the loss function 
-with respect to $\beta$:
-\begin{equation} \label{hier-loss}
-\begin{split}
-E = Loss(Y,X,\beta) + \frac{\lambda_{0}}{2} \|\theta_{0} \|^{2} +
-\sum_{i=1}^{k_{1}} \frac{\lambda_{1}}{2} \|\theta_{i1} \|^{2} & \\
-+ \sum_{i=1}^{k_{2}} \frac{\lambda_{2}}{2} \|\theta_{i2} \|^{2} +
-...... +
-\sum_{i=1}^{k_{l}} \frac{\lambda_{l}}{2} \|\theta_{il} \|^{2} &
-\end{split}
-\end{equation} 
- where $Loss(Y,X,\beta)$ is the loss function as explained in the previous section
- but with the additional constraint that $\beta$ satisfies  equation \ref{beta-theta-rel} 
- according to the tree structure. Here there are $k_{j}$ nodes in level $j$ and 
- $\theta_{1j}, \theta_{2j},.....,\theta_{k_{j}j}$ are the parameters of nodes in level $j$.
-
-\subsection{Learning the tree structures}
-
-
-
+  
 {\small
 \bibliographystyle{ieee}
-\bibliography{finalReport}
+\bibliography{egbib}
 }
 
 \end{document}
