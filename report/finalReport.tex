@@ -53,16 +53,45 @@ Massachusetts Institute of Technology\\
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-
-Human can use similarity between objects in order to recognize rare objects. They also make many abstract concepts when they see some objects very often. Interestingly, a large part of brain is associated with common classes like faces rather than rare objects like Ostrich.
-In our work we want to propose a model that has four mentioned characteristics. 1. Use more resources for categories that have many examples and less resources for categories that have few examples. 2. Has the ability recognize objects that it has never seen before, but can be made by combining previously seen objects. 3. Objects with few examples can borrow statistical strength from similar objects with many examples. 4. Models that have lot of sharing between model parameters of different classes should be favored.
-
+	
+	Human can use similarity between objects in order to recognize rare objects. They also make many abstract concepts when they see some objects very often. Interestingly, a large part of brain is associated with common classes like faces rather than rare objects like Ostrich.
+	In our work we want to propose a model that has four mentioned characteristics.1. Use more resources for categories that have many examples and less resources for categories that have few examples, 2. Has the ability recognize objects that it has never seen before, but can be made by combining previously seen objects, 3. Objects with few examples can borrow statistical strength from similar objects with many examples, 4. Models that have lot of sharing between model parameters of different classes should be favored.
+	
 \end{abstract}
 
 %%%%%%%%% BODY TEXT
 \section{Introduction}
 
-\section{Previous work}
+Object classification is one of the fundamental problem in computer vision it is more harder when number of categories is large. When number of categories is very large the complexity of the model should not be related to the number of categories. It should capture the similarities between categories in order to classify objects easier and more accurate.
+
+we all have a hierarchical based abstract concepts for object around us. We make more hierarchical concepts for object that we encounter more often. For example, if you ask a person about furniture they can categorized it by chair, desk, sofa, table, etc. and then for chair it goes like office chair, armchair, rock chair, or even wheelchair. These sub categories are related to each other visually. In this work we try to propose a model that makes more abstract concepts when there are lots of similar classes and less otherwise. This model also share many parameters between similar objects. It helps rare object that we have less training example from them use parameters of common examples. In other words, common classes have lots of training example by these examples algorithm can set accurate parameters. In other hand, rare objects have very few examples and set the parameters in an accurate way is almost impossible . Sharing parameters between these classes help rare classes to borrow statistical strength from common classes. 
+
+We all make a model for every concept and when encounter a new object we try to check to which concept model it matches more. All learning algorithm try to add additional information to the problem to avoid over fitting. They usually use Occam-razor to have models as simple as possible. Here we want to want to change this regularization in a way that if a model use previously learned objects it can have more complex shape. By this structure Models that have lot of sharing between model parameters of different classes will be favored.
+
+There are many objects around us. In the model that we have many categories, when we want to train a classifier to learn objects we should be able to model the similarities between different categories otherwise we should store many redundant information. In one vs all methods there is no difference between bicycle vs motorcycle and dogs vs motorcycle. While we like that if we have a false positive it should be bicycle rather than dogs. Even human sometime confused between different dogs or wrongly assume another animal to be a dog. So, we want a classifier to model this similarities.  
+
+The rest of paper is as follows, in section two we overview the related works. There is an overview about independent classifier methods in section three. In section four we explain our method which is hierarchical multi-class model for object recognition. Finally, there is experiment in section four and Conclusion and Future works come in section five.
+
+
+\section{Related works}
+
+There are lots of work being done in the transfer learning in object classification. There are three main questions that people should answer when they want to use transfer learning. 1) What to transfer?,  2) How to transfer?, When to transfer?. For a good survey in transfer learning see \cite{transfersurvey}
+
+For the first questions, they are methods that share parameters between classes like you can learn parameter of deep network \cite{deepnetwork} by Imagenet \cite{imagenet} and then test it in another benchmark. One other method is sharing training examples. 
+
+One important thing in how we should transfer is that between which classes we should transfer parameters/features. For example when we add a new class we should decide that with which classes this class should share features. Consider that we just have a few example from each class so deciding which classes should share information and which classes should not is a hard question.
+
+For fining which classes should share information some method use a global priori \cite{priori} (share information between all classes) which provides small benefits but still is better than independent classifiers. There are some models \cite{semantic} that use external hierarchy. As an example in \cite{semantic} wordnet \cite{wordnet} is a semantic network for english language. Words are grouped together if they are synonyms and record semantic relation between them. With this dictionary one can understand both bicycle and care belong to vehicle.
+
+
+
+Ruslan et all. \cite{ruslan}  make a tree in which every class is a leaf. In their setting height of tree is fixed and is equal to two. However, number of nodes in the tree is not fixed and they use CRP to decide if they should add another node to the tree or not. Classes which have common parent share features. They add classes incrementally to the tree. At each step they decide where in the tree they should put the class. Although this setting support feature 3, it does not the other features mentioned before. Ruslan improve his work on \cite{ruslan2} with deep network features.
+
+Sivic et all \cite{sivic} group images using multi-layer hierarchy tree. Tree is based on common visual elements. They used generative Hierarchical Latent Dirichlet Allocation(hLDA). This model usually use for unsupervised of topic hierarchies. In this work they automatically (without supervision) discover a hierarchical structure for the visual world using unlabeled images. They are also some model that try to find some relation between categories and use them to classify images \cite{transfer22}.
+
+%In \cite{wordnet} 
+%There are papers that use hierarchical for sharing features and parameters between classifiers. f
+%There are many algorithms in the field of transfer learning in multi class object %recognition.(\cite{miller2000learning}) 
 
 
 \section{Hierarchical Classification Model}
@@ -153,19 +182,19 @@ E = Loss(Y,X,\beta) + \frac{\lambda_{0}}{2} \|\theta_{0} \|^{2} +
 \subsection{Learning the tree structure}
 If we are given the tree structure that indicates the relation between different classes, then the 
 learning algorithm only needs to optimize for the loss in equation \ref{hier-loss}. However, as 
-discussed in \cite{Ruslan}, learning the tree structure dynamically based on the input classes and training data
-could lead to better results in object classification. We adopt the algorithm used in \cite{Ruslan} to multilevel trees
-and fine-grained partitioning. In \cite{Ruslan}, the author use a fixed number of levels i.e 3 in the tree and use
+discussed in \cite{ruslan}, learning the tree structure dynamically based on the input classes and training data
+could lead to better results in object classification. We adopt the algorithm used in \cite{ruslan} to multilevel trees
+and fine-grained partitioning. In \cite{ruslan}, the author use a fixed number of levels i.e 3 in the tree and use
 a non-parametric Chinese Restaurant Process Prior(CRP) to model the position of a class in the tree. Although this simple
 CRP prior allows one to have unknown and potentially unbounded number of groups of object classes, this is can only be
 used for two-level trees. For trees which have a fixed number of levels more than 3, one could use a nested CRP prior \cite{nestedCRP}.
 Since this approach has the drawback of limiting the tree to a fixed number of levels, we use a simple extension(modified-CRP) of the
-CRP prior used in \cite{Ruslan} to allow the flexibility of  having different depths at different parts of the tree.    
+CRP prior used in \cite{ruslan} to allow the flexibility of  having different depths at different parts of the tree.    
 
 A new class could go into one of the existing super-categories or create a new super-category. A new super-category 
 can be attached to any node which doesn't have any children that are leaf nodes. That is, we allow the parent of a new
 super-category to be any node that is not itself a super-category that has leaf nodes, which correspond to classes, as children.
-By following the procedure in \cite{Ruslan},  for each possible position of the new class we calculate a likelihood term and 
+By following the procedure in \cite{ruslan},  for each possible position of the new class we calculate a likelihood term and 
 modified-CRP prior term. The position of the new class will be the one that maximizes the sum of likelihood term and  prior term. 
 
 Let $i$ denote the node number of the leaf node corresponding to the new class.   
@@ -194,7 +223,7 @@ in the tree that have only super-categories as children. In other words, $m$ is 
 includes the root node as well all nodes that are not leaf nodes or parents of leaf nodes. It can be easily verified that 
 this defines a valid probability distribution over the choice $z$ of possible positions in the tree where the new class can be placed.
 
-We use same model-fitting algorithm described in \cite{Ruslan} with modifications to CRP-prior term and tree structure as described above.
+We use same model-fitting algorithm described in \cite{ruslan} with modifications to CRP-prior term and tree structure as described above.
 Basically, the algorithm alternates between deciding the position in the tree of a new class and optimizing the model parameters of all the nodes
 in the tree for a given tree structure.  This alternating procedure will reach a local minima of the loss function 
 described in equation \ref{hier-loss}. Since the loss function is convex, this is also the global minima of the loss function. 
