@@ -292,20 +292,23 @@ super-category goes above a certain threshold $maxChild$, we break down the subt
 \section {Experiments}
  
  \subsection {Implementation}
- We implement the whole algorithm in MATLAB the code is available in \cite{website:sourceCode}. We use Hog features for images. for optimizing functions we use \textit{fminunc} in MATLAB.
- One can use HOGgles \cite{hoggles} in order to see what is the shape of abstract concepts.
+ We implement the whole algorithm in MATLAB the code is available in \cite{website:sourceCode}. We use Hog features for finding $\phi(x)$ for images. We use \textit{fminunc} function for optimizing our loss function.
+ One can use HOGgles \cite{hoggles} in order to visualize the  abstract concepts.
  
  \subsection{Data Sets}
  \subsubsection{Smiley Faces}
- We make a syntactic data set in order to check our algorithm abilities. (merging two subcategories, make meaningful abstract concepts, make more nodes when there are more classes). There are 320 classes in this data set. each class has different nose, mouth, face and eyes. There are 1000 positive and negative examples in each classes there are noises added to each class. 
+ We make a syntactic data set in order to check our algorithm abilities. (merging two subcategories, make meaningful abstract concepts, make more nodes when there are more classes). There are 320 classes in this data set. Each class is a smiley face that has different nose, mouth, face and eyes. There are 1000 positive and negative examples in each classes. The pictures are 25 by 25 and we add noises added to each example of the class.
+  
  \subsubsection{Fine Grained Data Set}
- We use data set of fine grained challenge \cite{dataset}.There are five different domains (Cars, Birds, Aircrafts, Shoes and dogs) in this data set. In each domain there are about 100 classes. 
+ We use data set of fine grained challenge \cite{dataSet}.There are five different domains (Cars, Birds, Aircrafts, Shoes and dogs) in this data set. In each domain there are about 100 classes. Classes are very similar to each other there are different type of cars, dogs and etc.
  \subsection{Results}
  \subsubsection{Smiley Faces}
  As mentioned before the main reason for making this dataset was to visualize our algorithm's abilities.
  
  
-\textbf{merging} merging is ...
+\textbf{merging:} As showed in \ref{merge} the goal of merging is to create and recognize some objects that we have never seen before but we can make them by combining previously seen objects. In \ref{merge} we want to recognize sad circle face by just training on sad square face and happy circle face.
+
+As shown in \ref{smiley} we have six classes three of them just have eyes and three of them just have mouthes. When we add theta of class 
  
  
 \textbf{Meaningful super categories} merging is ...
@@ -319,7 +322,7 @@ hello
 \textbf{using simillar classes examples}
 hello
 
-   
+The accuracy of our algorithm for Smiley faces is 95%.
    
  \begin{figure}[t]
  	\begin{center}
