@@ -30,17 +30,17 @@
 \title{Hierarchical Multiclass Object Classification }
 
 \author{Fereshte Khani\\ 
-Massachusetts Institute of Technology\\
-{\tt\small fereshte@mit.edu}
-% For a paper whose authors are all at the same institution,
-% omit the following lines up until the closing ``}''.
-% Additional authors and addresses can be added with ``\and'',
-% just like the second author.
-% To save space, use either the email address or home page, not both
-\and
-Anurag Mukkara\\
-Massachusetts Institute of Technology\\
-{\tt\small anurag\_m@mit.edu}
+  Massachusetts Institute of Technology\\
+  {\tt\small fereshte@mit.edu}
+  % For a paper whose authors are all at the same institution,
+  % omit the following lines up until the closing ``}''.
+  % Additional authors and addresses can be added with ``\and'',
+  % just like the second author.
+  % To save space, use either the email address or home page, not both
+  \and
+  Anurag Mukkara\\
+  Massachusetts Institute of Technology\\
+  {\tt\small anurag\_m@mit.edu}
 }
 
 % TODO
@@ -53,41 +53,115 @@ Massachusetts Institute of Technology\\
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-	
-	Human can use similarity between objects in order to recognize rare objects. They also make many abstract concepts when they see some objects very often. Interestingly, a large part of brain is associated with common classes like faces rather than rare objects like Ostrich.
-	In our work we want to propose a model that has four mentioned characteristics.1. Use more resources for categories that have many examples and less resources for categories that have few examples, 2. Has the ability recognize objects that it has never seen before, but can be made by combining previously seen objects, 3. Objects with few examples can borrow statistical strength from similar objects with many examples, 4. Models that have lot of sharing between model parameters of different classes should be favored.
-	
+  
+Humans can use similarity between objects in order to recognize rare objects.
+They also make many abstract concepts when they see some objects very often.
+Interestingly, a large part of brain is associated with common classes like
+faces rather than rare objects like Ostrich.  In our work we want to propose
+a model that has four mentioned characteristics. 1. Use more resources for
+categories that have many examples and less resources for categories that
+have few examples, 2. Has the ability recognize objects that it has never
+seen before, but can be synthesized by combining previously seen objects, 3.
+Objects with few examples can borrow statistical strength from similar
+objects with many examples, 4. Models that have lot of sharing between model
+parameters of different classes should be favored.
+  
 \end{abstract}
 
 %%%%%%%%% BODY TEXT
 \section{Introduction}
 
-Object classification is one of the fundamental problem in computer vision it is more harder when number of categories is large. When number of categories is very large the complexity of the model should not be related to the number of categories. It should capture the similarities between categories in order to classify objects easier and more accurate.
+Object classification is one of the fundamental problems in computer vision.
+It becomes a lot harder when number of categories is large. When number of
+categories is very large, the complexity of the model should not be related to
+the number of categories. It should capture the similarities between categories
+in order to classify objects in an easier and more accurate way.
 
-we all have a hierarchical based abstract concepts for object around us. We make more hierarchical concepts for object that we encounter more often. For example, if you ask a person about furniture they can categorized it by chair, desk, sofa, table, etc. and then for chair it goes like office chair, armchair, rock chair, or even wheelchair. These sub categories are related to each other visually. In this work we try to propose a model that makes more abstract concepts when there are lots of similar classes and less otherwise. This model also share many parameters between similar objects. It helps rare object that we have less training example from them use parameters of common examples. In other words, common classes have lots of training example by these examples algorithm can set accurate parameters. In other hand, rare objects have very few examples and set the parameters in an accurate way is almost impossible . Sharing parameters between these classes help rare classes to borrow statistical strength from common classes. 
+We all have a hierarchy based abstraction for recognizing objects around
+us. We make more hierarchical concepts for object that we encounter more often.
+For example, if you ask a person about furniture they can categorize it by
+chair, desk, sofa, table, etc. and then for chair it goes like office chair,
+armchair, rock chair, or even wheelchair. These sub categories are related
+to each other visually. In this work, we try to propose a model that makes
+more abstract concepts when there are lots of similar classes and less
+otherwise. This model also share many parameters between similar objects.
+It helps rare objects that we have less training example from them use
+parameters of common examples. In other words, common classes have lots of
+training example by these examples algorithm can set accurate parameters.
+On other hand, rare objects have very few examples and set the parameters
+in an accurate way is almost impossible . Sharing parameters between these
+classes help rare classes to borrow statistical strength from common
+classes. 
 
-We all make a model for every concept and when encounter a new object we try to check to which concept model it matches more. All learning algorithm try to add additional information to the problem to avoid over fitting. They usually use Occam-razor to have models as simple as possible. Here we want to want to change this regularization in a way that if a model use previously learned objects it can have more complex shape. By this structure Models that have lot of sharing between model parameters of different classes will be favored.
+We all make a model for every concept and when we encounter a new object we try to
+check to which concept model it matches more. All learning algorithms try to add
+additional information to the problem to avoid over fitting. They usually use
+Occam-razor to have models as simple as possible. Here we want to
+change this regularization in a way that if a model uses previously learned
+objects it can have more complex shape. By this structure, models that have lot
+of sharing between model parameters of different classes will be favored.
 
-There are many objects around us. In the model that we have many categories, when we want to train a classifier to learn objects we should be able to model the similarities between different categories otherwise we should store many redundant information. In one vs all methods there is no difference between bicycle vs motorcycle and dogs vs motorcycle. While we like that if we have a false positive it should be bicycle rather than dogs. Even human sometime confused between different dogs or wrongly assume another animal to be a dog. So, we want a classifier to model this similarities.  
+There are many objects around us. In the model that we have many categories,
+when we want to train a classifier to learn objects we should be able to
+model the similarities between different categories otherwise we should
+store a lot of redundant information. In one vs all methods there is no
+difference between bicycle vs motorcycle and dogs vs motorcycle. While we
+like that if we have a false positive it should be bicycle rather than dogs. 
+Even humans sometimes are confused between different dogs or wrongly
+assume another animal to be a dog. So, we want a classifier to model this
+similarities.  
 
-The rest of paper is as follows, in section two we overview the related works. There is an overview about independent classifier methods in section three. In section four we explain our method which is hierarchical multi-class model for object recognition. Finally, there is experiment in section four and Conclusion and Future works come in section five.
+The rest of paper is as follows, in section 2 we give an overview of related work.
+There is an overview about independent multiclass classification in section 3. In
+section 4 we explain our method which is a hierarchical multi-class model for
+object recognition. We discuss experimental results in section 4 and conclude 
+in section 5.
 
 
-\section{Related works}
+\section{Related work}
 
-There are lots of work being done in the transfer learning in object classification. There are three main questions that people should answer when they want to use transfer learning. 1) What to transfer?,  2) How to transfer?, When to transfer?. For a good survey in transfer learning see \cite{transfersurvey}
+There are lots of work being done in the field of transfer learning in object
+classification. There are three main questions that people should answer when
+they want to use transfer learning. 1) What to transfer?,  2) How to transfer?,
+When to transfer?. For a good survey in transfer learning see
+\cite{transfersurvey}. For the first question, there are methods that share
+parameters between classes like you can learn parameter of deep network
+\cite{deepnetwork} by Imagenet \cite{imagenet} and then test it in on another
+benchmark. One other method is sharing training examples.  One important
+thing in how we should transfer is that between which classes we should
+transfer parameters/features. For example when we add a new class we
+should decide that with which classes this class should share features.
+If there are only a few examples from each class so deciding which
+classes should share information and which classes should not is a hard
+question.
 
-For the first questions, they are methods that share parameters between classes like you can learn parameter of deep network \cite{deepnetwork} by Imagenet \cite{imagenet} and then test it in another benchmark. One other method is sharing training examples. 
+For finding which classes should share information some methods use a global
+priori \cite{priori} (share information between all classes) which provides
+small benefits but still is better than independent classifiers. There are some
+models \cite{semantic} that use an external hierarchy. For example, in
+\cite{semantic}, wordnet \cite{wordnet} is a semantic network for English
+language. Words are grouped together if they are synonyms and record semantic
+relation between them. With this dictionary one can understand both bicycle and
+care belong to vehicle.
 
-One important thing in how we should transfer is that between which classes we should transfer parameters/features. For example when we add a new class we should decide that with which classes this class should share features. Consider that we just have a few example from each class so deciding which classes should share information and which classes should not is a hard question.
 
-For fining which classes should share information some method use a global priori \cite{priori} (share information between all classes) which provides small benefits but still is better than independent classifiers. There are some models \cite{semantic} that use external hierarchy. As an example in \cite{semantic} wordnet \cite{wordnet} is a semantic network for english language. Words are grouped together if they are synonyms and record semantic relation between them. With this dictionary one can understand both bicycle and care belong to vehicle.
+Ruslan et al. \cite{ruslan} make a tree in which every class is a leaf. In
+their setting, height of tree is fixed and is equal to two. However, number of
+super-categories in the tree is not fixed and they use Chinese Restaurant Prior \cite{CRP} 
+to decide if they should add
+a new super-category to the tree or not. Classes which have a common parent share
+features. They add classes incrementally to the tree. At each step they decide
+where in the tree they should place the new class. Although this setting support
+feature 3, it does not incorporate the other features mentioned above. 
+Ruslan et al. improve  their model in \cite{ruslan2} with deep network features.
 
-
-
-Ruslan et all. \cite{ruslan}  make a tree in which every class is a leaf. In their setting height of tree is fixed and is equal to two. However, number of nodes in the tree is not fixed and they use CRP to decide if they should add another node to the tree or not. Classes which have common parent share features. They add classes incrementally to the tree. At each step they decide where in the tree they should put the class. Although this setting support feature 3, it does not the other features mentioned before. Ruslan improve his work on \cite{ruslan2} with deep network features.
-
-Sivic et all \cite{sivic} group images using multi-layer hierarchy tree. Tree is based on common visual elements. They used generative Hierarchical Latent Dirichlet Allocation(hLDA). This model usually use for unsupervised of topic hierarchies. In this work they automatically (without supervision) discover a hierarchical structure for the visual world using unlabeled images. They are also some model that try to find some relation between categories and use them to classify images \cite{transfer22}.
+Sivic et al. \cite{sivic} group images using multi-layer hierarchy tree. Tree
+is based on common visual elements. They used generative Hierarchical Latent
+Dirichlet Allocation(hLDA)\cite{hlda}. This model is usually used for unsupervised learning of topic
+hierarchies. In their work, they automatically (without supervision) discover a
+hierarchical structure for the visual world using unlabeled images. They are
+also some models that try to find some relation between categories and use them
+to classify images \cite{transfer22}.
 
 %In \cite{wordnet} 
 %There are papers that use hierarchical for sharing features and parameters between classifiers. f
@@ -98,66 +172,66 @@ Sivic et all \cite{sivic} group images using multi-layer hierarchy tree. Tree is
 
 \subsection{Learning Independent Classification Models}
 
-Consider a classification problem where we observe a dataset $D$ of labelled  training examples. 
+Consider a classification problem where we observe a dataset $D$ of labeled  training examples. 
 Each example belongs belongs to one $K$ classes(eg. 40 object categories). The dataset $D$
 has $n_{k}$ labeled examples for for each class $k  \in {1,2,....,K} $. We $x_{i}^{(k)} \in R^{D} $ 
 be the input feature vector of length D for the $i^{th}$ training example of class $k$ and 
 $y_{i}^{(k)}$ be the corresponding class label. $ y_{i}^{k} = 1 $ indicates that the $i^{th}$ training example 
- is a positive example for class $K$ and  $ y_{i}^{k} = -1 $ indicates that the $i^{th}$ training example 
- is a negative example for class $K$.
- 
- For a binary classification problem we can use a simple logistic regression model. In particular, 
- for each class $k$, the probability of a positive instance can be modeled as: 
- \begin{equation}
- p(y_{i}^{(k)} = 1 | \beta^{(k)} )  = \frac { \exp( \beta^{(k)^{T}}  x_{i}^{(k)})  }{  1 + \exp(\beta^{(k)^{T}}  x_{i}^{(k)} ) } 
- \end{equation}
-  where $k$ ranges over the $K$ classes and $ \beta^{k}  \in R^{D} $ is the unknown model parameter of length D 
-  for class k. 
-  In addition, we place a zero-mean spherical Gaussian prior over each model parameter  $  \beta^{k} $:
-  \begin{equation}
-	p(\beta)  = \prod_{k=1}^{K} p(\beta^{(k)}) = \prod_{k=1}^{K} N(0, \frac{1}{\lambda})
-  \end{equation}
- where $N(\mu, \Sigma)$ indicates a Gaussian probability distribution with mean $\mu$ and covariance $\Sigma$.
- Here, $\lambda$ is the prior parameter.  With this modeling framework, the log posterior distribution of the unknown 
- parameters can be expresses as 
- \begin{equation}
-	\log p(\beta | D) \propto \sum_{k=1}^{K} \Big[ \, \ \sum_{i=1}^{n_{k}} \log p(y_{i}^{(k)} | x_{i}^{(k)}, \beta^{(k)}) \ + \ \log p(\beta^{(k)}) \ \Big] \,
+is a positive example for class $K$ and  $ y_{i}^{k} = -1 $ indicates that the $i^{th}$ training example 
+is a negative example for class $K$.
+
+For a binary classification problem we can use a simple logistic regression model. In particular, 
+for each class $k$, the probability of a positive instance can be modeled as: 
+\begin{equation}
+  p(y_{i}^{(k)} = 1 | \beta^{(k)} )  = \frac { \exp( \beta^{(k)^{T}}  x_{i}^{(k)})  }{  1 + \exp(\beta^{(k)^{T}}  x_{i}^{(k)} ) } 
 \end{equation}
- Maximizing the log posterior(or finding the MAP estimate ) over the unknown model parameters $\beta$  is  equivalent to 
- minimizing the probabilistic loss function with quadratic regularization terms:
- \begin{equation}
- 	E = \sum_{k=1}^{K}  \Big[ \, \ \sum_{i=1}^{n_{k}} Loss(y_{i}^{(k)}, x_{i}^{(k)}, \beta^{(k)}) + \frac{\lambda}{2} \| \beta^{(k)}) \|^{2} \ \Big] \,
- \end{equation} 
- where the probabilistic loss function is given by:
- \begin{equation}
- %Loss(y_{i}^{(k)},  x_{i}^{(k)},  \beta^{(k)})  =  - \sum_{j \in {-1,1} } I\{y_{i}^{(k)}=j\} \log p(y_{i}^{(k)}=j | x_{i}^{(k)},\beta^{(k)})
- Loss(y,  x,  \beta)  =  - \sum_{j \in {-1,1} } I\{y=j\} \log p(y=j | x,\beta)
+where $k$ ranges over the $K$ classes and $ \beta^{k}  \in R^{D} $ is the unknown model parameter of length D 
+for class k. 
+In addition, we place a zero-mean spherical Gaussian prior over each model parameter  $  \beta^{k} $:
+\begin{equation}
+  p(\beta)  = \prod_{k=1}^{K} p(\beta^{(k)}) = \prod_{k=1}^{K} N(0, \frac{1}{\lambda})
+\end{equation}
+where $N(\mu, \Sigma)$ indicates a Gaussian probability distribution with mean $\mu$ and covariance $\Sigma$.
+Here, $\lambda$ is the prior parameter.  With this modeling framework, the log posterior distribution of the unknown 
+parameters can be expresses as 
+\begin{equation}
+  \log p(\beta | D) \propto \sum_{k=1}^{K} \Big[ \, \ \sum_{i=1}^{n_{k}} \log p(y_{i}^{(k)} | x_{i}^{(k)}, \beta^{(k)}) \ + \ \log p(\beta^{(k)}) \ \Big] \,
+\end{equation}
+Maximizing the log posterior(or finding the MAP estimate ) over the unknown model parameters $\beta$  is  equivalent to 
+minimizing the probabilistic loss function with quadratic regularization terms:
+\begin{equation}
+  E = \sum_{k=1}^{K}  \Big[ \, \ \sum_{i=1}^{n_{k}} Loss(y_{i}^{(k)}, x_{i}^{(k)}, \beta^{(k)}) + \frac{\lambda}{2} \| \beta^{(k)}) \|^{2} \ \Big] \,
+\end{equation} 
+where the probabilistic loss function is given by:
+\begin{equation}
+  %Loss(y_{i}^{(k)},  x_{i}^{(k)},  \beta^{(k)})  =  - \sum_{j \in {-1,1} } I\{y_{i}^{(k)}=j\} \log p(y_{i}^{(k)}=j | x_{i}^{(k)},\beta^{(k)})
+  Loss(y,  x,  \beta)  =  - \sum_{j \in {-1,1} } I\{y=j\} \log p(y=j | x,\beta)
 \end{equation} 
 One important property of the loss function is that it is convex and hence can be efficiently optimized
 using standard convex optimization solvers.
- 
- The main drawback of this formulation is that all the $K$ classes are treated as unrelated entities and hence 
- do not share any model parameters. In fact, it is observed that the objective function decomposes into 
- $K$ sub-problems, each of which is a binary classification problem that can be trained independently 
- using the training data for that particular class.
- 
- 
- \subsection{Learning a Hierarchical Classification Model}
- In our framework, a hierarchical tree structure is used to model sharing of parameters between 
- visually related classes. Each node in the tree has a model parameter, a vector of length $D$ 
- associated with it.  Let $ \theta = \{ \theta_{1}, \theta_{2},.....,\theta_{n}\} $ denote the model parameters 
- of all the nodes in the tree, where $n$ is the number of nodes starting from the root node to the all the leaf nodes.
- The leaf nodes correspond to the $K$ object categories or classes. The parameters for a particular class $k$
- is the sum of the parameters of all the nodes, say $i_{1}, i_{2}, ..., i_{l} $, along the path from the leaf node
- corresponding to that class up until the root node of the tree:
- \begin{equation} \label{beta-theta-rel}
- \beta^{(k)} = \theta_{i_{1}} +  \theta_{i_{2}} + ...... + \theta_{i_{l}}
-  \end{equation} 
- We place zero-mean spherical Gaussian priors on the parameters of each node. However, the 
- covariance matrix is dependent on the level of a particular node in the tree i.e all the nodes at
- a particular level have the same prior parameters.
- \begin{equation}
- p(\theta_{i})  = N(0,\frac{1}{\lambda_{l}}I) 
+
+The main drawback of this formulation is that all the $K$ classes are treated as unrelated entities and hence 
+do not share any model parameters. In fact, it is observed that the objective function decomposes into 
+$K$ sub-problems, each of which is a binary classification problem that can be trained independently 
+using the training data for that particular class.
+
+
+\subsection{Learning a Hierarchical Classification Model}
+In our framework, a hierarchical tree structure is used to model sharing of parameters between 
+visually related classes. Each node in the tree has a model parameter, a vector of length $D$ 
+associated with it.  Let $ \theta = \{ \theta_{1}, \theta_{2},.....,\theta_{n}\} $ denote the model parameters 
+of all the nodes in the tree, where $n$ is the number of nodes starting from the root node to the all the leaf nodes.
+The leaf nodes correspond to the $K$ object categories or classes. The parameters for a particular class $k$
+is the sum of the parameters of all the nodes, say $i_{1}, i_{2}, ..., i_{l} $, along the path from the leaf node
+corresponding to that class up until the root node of the tree:
+\begin{equation} \label{beta-theta-rel}
+  \beta^{(k)} = \theta_{i_{1}} +  \theta_{i_{2}} + ...... + \theta_{i_{l}}
+\end{equation} 
+We place zero-mean spherical Gaussian priors on the parameters of each node. However, the 
+covariance matrix is dependent on the level of a particular node in the tree i.e all the nodes at
+a particular level have the same prior parameters.
+\begin{equation}
+  p(\theta_{i})  = N(0,\frac{1}{\lambda_{l}}I) 
 \end{equation}   
 where node $i$ is at level $l$ in the tree. The root node has level 0 and the level increases as 
 we move towards the leaf nodes.
@@ -166,18 +240,18 @@ With this modification in the way the model parameters for classes are related, 
 learning problem can be formulated as minimizing the log posterior or equivalently the loss function 
 with respect to $\beta$:
 \begin{equation} \label{hier-loss}
-\begin{split}
-E = Loss(Y,X,\beta) + \frac{\lambda_{0}}{2} \|\theta_{0} \|^{2} +
-\sum_{i=1}^{k_{1}} \frac{\lambda_{1}}{2} \|\theta_{i1} \|^{2} & \\
-+ \sum_{i=1}^{k_{2}} \frac{\lambda_{2}}{2} \|\theta_{i2} \|^{2} +
-...... +
-\sum_{i=1}^{k_{l}} \frac{\lambda_{l}}{2} \|\theta_{il} \|^{2} &
-\end{split}
+  \begin{split}
+    E = Loss(Y,X,\beta) + \frac{\lambda_{0}}{2} \|\theta_{0} \|^{2} +
+    \sum_{i=1}^{k_{1}} \frac{\lambda_{1}}{2} \|\theta_{i1} \|^{2} & \\
+    + \sum_{i=1}^{k_{2}} \frac{\lambda_{2}}{2} \|\theta_{i2} \|^{2} +
+    ...... +
+    \sum_{i=1}^{k_{l}} \frac{\lambda_{l}}{2} \|\theta_{il} \|^{2} &
+  \end{split}
 \end{equation} 
- where $Loss(Y,X,\beta)$ is the loss function as explained in the previous section
- but with the additional constraint that $\beta$ satisfies  equation \ref{beta-theta-rel} 
- according to the tree structure. Here there are $k_{j}$ nodes in level $j$ and 
- $\theta_{1j}, \theta_{2j},.....,\theta_{k_{j}j}$ are the parameters of nodes in level $j$.
+where $Loss(Y,X,\beta)$ is the loss function as explained in the previous section
+but with the additional constraint that $\beta$ satisfies  equation \ref{beta-theta-rel} 
+according to the tree structure. Here there are $k_{j}$ nodes in level $j$ and 
+$\theta_{1j}, \theta_{2j},.....,\theta_{k_{j}j}$ are the parameters of nodes in level $j$.
 
 \subsection{Learning the tree structure}
 If we are given the tree structure that indicates the relation between different classes, then the 
@@ -204,53 +278,65 @@ we choose a position it means that we include the parameters of all the nodes th
 If the position corresponds to a category that is visually dissimilar to the new class, then the best we can with $\theta_{i}$ with still 
 result in a lower likelihood term. If the the category is visually similar to the new class, we can achieve a far better fit and the likelihood
 term goes up. We have observed that the maximum of the likelihood over the model parameter $\theta_{i}$ is greatly affected by the position
- we choose for the leaf node. In addition to the likelihood term, the modified-CRP prior term favors super-categories that have a large number of 
- leaf nodes or class under them. The modified-CRP prior is given by:
- 
- \begin{displaymath}
- p(z=j) = \left \{
-	    \begin{array}{lr}
- 		\frac{m_{j}}{n+\gamma*m} & : \text{$j$ is old} \\
-		\frac{\gamma}{n+\gamma*m} & : \text{$j$ is new}
-	   \end{array}
-	  \right.
- \end{displaymath}  
-where $n$ is the total number of leaf nodes, $m_{j}$
-is the number of leaf nodes under super-category $j$,
-$\gamma$ is the concentration parameter that controls the probability of creating a new super-category,
-$m$ is the total number of positions of new super-categories in the tree. $m$ is equal to number of nodes
-in the tree that have only super-categories as children. In other words, $m$ is the cardinality of the set that 
-includes the root node as well all nodes that are not leaf nodes or parents of leaf nodes. It can be easily verified that 
-this defines a valid probability distribution over the choice $z$ of possible positions in the tree where the new class can be placed.
+we choose for the leaf node. In addition to the likelihood term, the modified-CRP prior term favors super-categories that have a large number of 
+leaf nodes or class under them. The modified-CRP prior is given by:
 
-We use same model-fitting algorithm described in \cite{ruslan} with modifications to CRP-prior term and tree structure as described above.
-Basically, the algorithm alternates between deciding the position in the tree of a new class and optimizing the model parameters of all the nodes
-in the tree for a given tree structure.  This alternating procedure will reach a local minima of the loss function 
-described in equation \ref{hier-loss}. Since the loss function is convex, this is also the global minima of the loss function. 
-For optimizing the model parameters for a fixed tree structure , we use iterative coordinate-descend procedure.
-Since the parameters of all the nodes at any given level of the tree are independent of each other, we parallelize the loss minimization 
-routine for these nodes. This leads to significant reduction in time taken to learn the model.
+\begin{displaymath}
+  p(z=j) = \left \{
+  \begin{array}{lr}
+    \frac{m_{j}}{n+\gamma*m} & : \text{$j$ is old} \\
+    \frac{\gamma}{n+\gamma*m} & : \text{$j$ is new}
+  \end{array}
+  \right.
+\end{displaymath}  
+where $n$ is the total number of leaf nodes, $m_{j}$ is the number of leaf
+nodes under super-category $j$, $\gamma$ is the concentration parameter that
+controls the probability of creating a new super-category, $m$ is the total
+number of positions of new super-categories in the tree. $m$ is equal to number
+of nodes in the tree that have only super-categories as children. In other
+words, $m$ is the cardinality of the set that includes the root node as well
+all nodes that are not leaf nodes or parents of leaf nodes. It can be easily
+verified that this defines a valid probability distribution over the choice $z$
+of possible positions in the tree where the new class can be placed.
 
-We also use a simple heuristic to maintain a fine-partitioning of the classes among into among super-categories. 
-We need to avoid many leaf nodes accumulating under the 
-same super-category as this would lead to a very coarse-grain partitioning of the classes.  So, whenever the number of leaf nodes under a 
-super-category goes above a certain threshold $maxChild$, we break down the subtree under that node to create
- a more fine-grained partitioning.  To do this we run the entire optimization algorithm described above on the classes that were originally under this
- super-category. Basically, we consider the node corresponding to the super-category as a root node and keep adding new leaf nodes 
- to form a tree under this root node. In most cases, the $maxChild$ number of classes that previously shared the same parent are dividing
- several finer super-categories and have different parents.  In the rare case when the classes are very similar to each other, this process will add
- redundant to the tree. We identify this pathology and remove the redundant node while appropriately modifying the modle parameters of the 
- relevant nodes. The parameter $maxChild$ can be configured to control the degree of fine-grained partitioning of classes. A lower value
- of $maxChild$ leads to very fine-grained partitions whereas a higher value of $maxChild$ results in coarser partitions. We found that 
- a value of four results in best results. 
- 
+We use same model-fitting algorithm described in \cite{ruslan} with
+modifications to CRP-prior term and tree structure as described above.
+Basically, the algorithm alternates between deciding the position in the tree
+of a new class and optimizing the model parameters of all the nodes in the tree
+for a given tree structure.  This alternating procedure will reach a local
+minima of the loss function described in equation \ref{hier-loss}. Since the
+loss function is convex, this is also the global minima of the loss function.
+For optimizing the model parameters for a fixed tree structure , we use
+iterative coordinate-descend procedure.  Since the parameters of all the nodes
+at any given level of the tree are independent of each other, we parallelize
+the loss minimization routine for these nodes. This leads to significant
+reduction in time taken to learn the model.
 
- 
+We also use a simple heuristic to maintain a fine-partitioning of the classes
+among into among super-categories.  We need to avoid many leaf nodes
+accumulating under the same super-category as this would lead to a very
+coarse-grain partitioning of the classes.  So, whenever the number of leaf
+nodes under a super-category goes above a certain threshold $maxChild$, we
+break down the subtree under that node to create a more fine-grained
+partitioning.  To do this we run the entire optimization algorithm described
+above on the classes that were originally under this super-category. Basically,
+we consider the node corresponding to the super-category as a root node
+and keep adding new leaf nodes to form a tree under this root node. In
+most cases, the $maxChild$ number of classes that previously shared the
+same parent are dividing several finer super-categories and have
+different parents.  In the rare case when the classes are very similar to
+each other, this process will add redundant to the tree. We identify this
+pathology and remove the redundant node while appropriately modifying the
+model parameters of the relevant nodes. The parameter $maxChild$ can be
+configured to control the degree of fine-grained partitioning of classes.
+A lower value of $maxChild$ leads to very fine-grained partitions whereas
+a higher value of $maxChild$ results in coarser partitions. We found that
+a value of 4  best results. 
 
 
 {\small
-\bibliographystyle{ieee}
-\bibliography{finalReport}
+  \bibliographystyle{ieee}
+  \bibliography{finalReport}
 }
 
 \end{document}
