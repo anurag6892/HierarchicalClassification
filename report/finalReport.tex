@@ -285,9 +285,7 @@ super-category goes above a certain threshold $maxChild$, we break down the subt
  		%\fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
  		\includegraphics[width=0.8\linewidth]{smiley}
  	\end{center}
- 	\caption{Example of caption.  It is set in Roman so that mathematics
- 		(always set in Roman: $B \sin A = A \sin B$) may be included without an
- 		ugly clash.}
+ 	\caption{(a) First row shows eight classes of smiley faces. class 1,4,6 just have eys and class 2,3,5 just have eyes. The second row show the visualization for parameter $\theta$ for each node. The third line shows the visualization of $\theta$ for node 7,8,8 respectively. (b) shows the tree corossponding to these examples. As you can see in the visualization of parameter of node 7,8 they capture that there are eyes or mouthes in their children. (c) shows two visualizatoin of smiley faces by adding parameter by adding parameter $\theta$ of different nodes. If a new example which is look like these two come for testing we can identify it by these two}
  	\label{fig:long}
  	\label{fig:onecol}
  \end{figure}
@@ -304,8 +302,25 @@ super-category goes above a certain threshold $maxChild$, we break down the subt
  We use data set of fine grained challenge \cite{dataset}.There are five different domains (Cars, Birds, Aircrafts, Shoes and dogs) in this data set. In each domain there are about 100 classes. 
  \subsection{Results}
  \subsubsection{Smiley Faces}
- As mentioned before the main reason of this dataset was to visualize our algorithm's abilities.
- \textbf{merging} merging is ...
+ As mentioned before the main reason for making this dataset was to visualize our algorithm's abilities.
+ 
+ 
+\textbf{merging} merging is ...
+ 
+ 
+\textbf{Meaningful super categories} merging is ...
+  hello
+  
+  
+\textbf{favoring shared parameters} merging is ...
+hello
+
+
+\textbf{using simillar classes examples}
+hello
+
+   
+   
  \begin{figure}[t]
  	\begin{center}
  		%\fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
@@ -326,12 +341,8 @@ Due to limited time we just could learn for two hours. We use 10k pixels images 
 
 For checking that if one class belong to one of the leaves we compute 
 \begin{displaymath}
-p(z=j) = \left \{
-\begin{array}{lr}
-\frac{m_{j}}{n+\gamma*m} & : \text{$j$ is old} \\
-\frac{\gamma}{n+\gamma*m} & : \text{$j$ is new}
-\end{array}
-\right.
+predictedClass = \operatorname*{arg\,max}_{i \in leaves of Tree} 
+\frac{\frac{1}{(1+exp(-\beta'_i.\phi(x)))}}{\|\beta_i\|^2}
 \end{displaymath}  
 
 and find the maximum as a desired class.
