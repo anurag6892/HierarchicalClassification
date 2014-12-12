@@ -219,7 +219,22 @@ using the training data for that particular class.
 
 
 \subsection{Learning a Hierarchical Classification Model}
-In our framework, a hierarchical tree structure is used to model sharing of parameters between 
+
+\begin{figure}[t]
+ 	\begin{center}
+ 		%\fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
+ 		\includegraphics[width=0.8\linewidth]{tree_withoutnew.png}
+ 	\end{center}
+ 	\caption{Hierarchical Classification Model with trees of arbitrary height.
+ 	         Each node in the tree has a model parameter associated with it.
+ 	         The leaf nodes correspond to various classes and the non-leaf nodes
+ 	         are the super-categories. Model parameters for each class
+ 	         are given by the sum of parameters along the path from the 
+ 	         corresponding leaf node to the root node}
+ 	\label{fig:hier-tree-intro}
+ \end{figure}
+
+In our framework, a hierarchical tree structure, depicted in Figure~\ref{hier-tree-intro} is used to model sharing of parameters between 
 visually related classes. Each node in the tree has a model parameter, a vector of length $D$ 
 associated with it.  Let $ \theta = \{ \theta_{1}, \theta_{2},.....,\theta_{n}\} $ denote the model parameters 
 of all the nodes in the tree, where $n$ is the number of nodes starting from the root node to the all the leaf nodes.
@@ -254,28 +269,9 @@ with respect to $\beta$:
  but with the additional constraint that $\beta$ satisfies  equation \ref{beta-theta-rel} 
  according to the tree structure. Here there are $k_{j}$ nodes in level $j$ and 
  $\theta_{1j}, \theta_{2j},.....,\theta_{k_{j}j}$ are the parameters of nodes in level $j$.
-\begin{figure}[t]
-	\begin{center}
-		%\fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
-		\includegraphics[width=0.8\linewidth]{tree}
-	\end{center}
-	\caption{ Learning the tree hierarchy. The `human' node can be attached 
-              to one of the existing super-categories:`animal', `4-legged animal', `furniture'
-              or create its own novel super-category.}
-	\label{fig:learning-tree-hierarchy}
-\end{figure}
+
 \subsection{Learning the tree structure}
- \begin{figure}[t]
- 	\begin{center}
- 		%\fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
- 		\includegraphics[width=0.8\linewidth]{smiley}
- 	\end{center}
- 	\caption{Example of caption.  It is set in Roman so that mathematics
- 		(always set in Roman: $B \sin A = A \sin B$) may be included without an
- 		ugly clash.}
- 	\label{fig:long}
- 	\label{fig:onecol}
- \end{figure}
+ 
 If we are given the tree structure that indicates the relation between different classes, then the 
 learning algorithm only needs to optimize for the loss in equation \ref{hier-loss}. However, as 
 discussed in \cite{ruslan}, learning the tree structure dynamically based on the input classes and training data
@@ -286,6 +282,19 @@ CRP prior allows one to have unknown and potentially unbounded number of groups 
 used for two-level trees. For trees which have a fixed number of levels more than 3, one could use a nested CRP prior \cite{nestedCRP}.
 Since this approach has the drawback of limiting the tree to a fixed number of levels, we use a simple extension(modified-CRP) of the
 CRP prior used in \cite{ruslan} to allow the flexibility of  having different depths at different parts of the tree.    
+
+\begin{figure}[t]
+	\begin{center}
+		%\fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
+		\includegraphics[width=0.8\linewidth]{tree}
+	\end{center}
+	\caption{ Learning the tree hierarchy. The `human' node can be attached 
+              to one of the existing super-categories:`animal', `4-legged animal', `furniture'
+              or create its own novel super-category.}
+	\label{fig:learning-tree-hierarchy}
+\end{figure}
+
+
 
 A new class could go into one of the existing super-categories or create a new super-category. A new super-category 
 can be attached to any node which doesn't have any children that are leaf nodes. That is, we allow the parent of a new
@@ -313,7 +322,25 @@ we choose for the leaf node. In addition to the likelihood term, the modified-CR
 	  \right.
  \end{displaymath} 
  
-  \begin{figure}[t]
+  
+where $n$ is the total number of leaf nodes, $m_{j}$
+is the number of leaf nodes under super-category $j$,
+$\gamma$ is the concentration parameter that controls the probability of creating a new super-category,
+$m$ is the total number of positions of new super-categories in the tree. $m$ is equal to number of nodes
+in the tree that have only super-categories as children. In other words, $m$ is the cardinality of the set that 
+includes the root node as well all nodes that are not leaf nodes or parents of leaf nodes. It can be easily verified that 
+this defines a valid probability distribution over the choice $z$ of possible positions in the tree where the new class can be placed.
+
+
+We use the same model-fitting algorithm described in \cite{ruslan} with modifications to CRP-prior term and tree structure as described above.
+Basically, the algorithm alternates between deciding the position in the tree of a new class and optimizing the model parameters of all the nodes
+in the tree for a given tree structure.  This alternating procedure will reach a local minima of the loss function 
+described in equation \ref{hier-loss}. Since the loss function is convex, this is also the global minima of the loss function. 
+For optimizing the model parameters for a fixed tree structure , we use iterative coordinate-descend procedure.
+Since the parameters of all the nodes at any given level of the tree are independent of each other, we parallelize the loss minimization 
+routine for these nodes. This leads to significant reduction in time taken to learn the model.
+
+\begin{figure}[t]
   	\begin{center}
   		%\fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
   		\includegraphics[width=0.8\linewidth]{split}
@@ -325,21 +352,7 @@ we choose for the leaf node. In addition to the likelihood term, the modified-CR
   	\label{fig:long}
   	\label{fig:onecol}
   \end{figure}
-where $n$ is the total number of leaf nodes, $m_{j}$
-is the number of leaf nodes under super-category $j$,
-$\gamma$ is the concentration parameter that controls the probability of creating a new super-category,
-$m$ is the total number of positions of new super-categories in the tree. $m$ is equal to number of nodes
-in the tree that have only super-categories as children. In other words, $m$ is the cardinality of the set that 
-includes the root node as well all nodes that are not leaf nodes or parents of leaf nodes. It can be easily verified that 
-this defines a valid probability distribution over the choice $z$ of possible positions in the tree where the new class can be placed.
 
-We use same model-fitting algorithm described in \cite{ruslan} with modifications to CRP-prior term and tree structure as described above.
-Basically, the algorithm alternates between deciding the position in the tree of a new class and optimizing the model parameters of all the nodes
-in the tree for a given tree structure.  This alternating procedure will reach a local minima of the loss function 
-described in equation \ref{hier-loss}. Since the loss function is convex, this is also the global minima of the loss function. 
-For optimizing the model parameters for a fixed tree structure , we use iterative coordinate-descend procedure.
-Since the parameters of all the nodes at any given level of the tree are independent of each other, we parallelize the loss minimization 
-routine for these nodes. This leads to significant reduction in time taken to learn the model.
 
 We also use a simple heuristic to maintain a fine-partitioning of the classes among into among super-categories. 
 We need to avoid many leaf nodes accumulating under the 
@@ -366,8 +379,9 @@ super-category goes above a certain threshold $maxChild$, we break down the subt
 \section {Experiments}
  
  \subsection {Implementation}
- We implement the whole algorithm in MATLAB the code is available in \cite{website:sourceCode}. We use HOG \cite{ features for images. for optimizing functions we use \textit{fminunc} in MATLAB.
- One can use HOGgles \cite{hoggles} in order to see what is the shape of abstract concepts.
+ We implemented the whole algorithm in MATLAB.  The code is available at \cite{website:sourceCode}. We use HOG \cite{hog} to genertate feature vectors for images. 
+ For optimizing the probabilistic loss functions we use \textit{fminunc} function in MATLAB that does unconstrained optimization using Quasi-Newton method. 
+ One can use HOGgles \cite{hoggles} in order to visualize the learned model parameters.
  
  \subsection{Data Sets}
  \subsubsection{Smiley Faces}
@@ -411,7 +425,7 @@ hello
 
 
  \subsubsection{Fine Grained Data Set}
-Due to limited time we just could learn for two hours. We use 10k pixels images for 8 classes and two domains. We reach the accuracy of 70%.
+Due to limited time we just could train for two hours. When we use 100*100 pixel images for 8 classes and two domains, we reach an accuracy of 70%.
 
 For checking that if one class belong to one of the leaves we compute 
 \begin{displaymath}
