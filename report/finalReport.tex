@@ -193,6 +193,17 @@ E = Loss(Y,X,\beta) + \frac{\lambda_{0}}{2} \|\theta_{0} \|^{2} +
 	\label{fig:onecol}
 \end{figure}
 \subsection{Learning the tree structure}
+ \begin{figure}[t]
+ 	\begin{center}
+ 		%\fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
+ 		\includegraphics[width=0.8\linewidth]{tree_withoutnew}
+ 	\end{center}
+ 	\caption{Example of caption.  It is set in Roman so that mathematics
+ 		(always set in Roman: $B \sin A = A \sin B$) may be included without an
+ 		ugly clash.}
+ 	\label{fig:long}
+ 	\label{fig:onecol}
+ \end{figure}
 If we are given the tree structure that indicates the relation between different classes, then the 
 learning algorithm only needs to optimize for the loss in equation \ref{hier-loss}. However, as 
 discussed in \cite{ruslan}, learning the tree structure dynamically based on the input classes and training data
@@ -283,7 +294,7 @@ super-category goes above a certain threshold $maxChild$, we break down the subt
 \section {Experiments}
  
  \subsection {Implementation}
- We implement the whole algorithm in MATLAB the code is available in \cite{code}. We use Hog features for images. for optimizing functions we use \textit{fminunc} in MATLAB.
+ We implement the whole algorithm in MATLAB the code is available in \cite{website:sourceCode}. We use Hog features for images. for optimizing functions we use \textit{fminunc} in MATLAB.
  One can use HOGgles \cite{hoggles} in order to see what is the shape of abstract concepts.
  
  \subsection{Data Sets}
