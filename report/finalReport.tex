@@ -262,8 +262,7 @@ with respect to $\beta$:
 	\caption{ Learning the tree hierarchy. The `human' node can be attached 
               to one of the existing super-categories:`animal', `4-legged animal', `furniture'
               or create its own novel super-category.}
-	\label{fig:long}
-	\label{fig:onecol}
+	\label{fig:learning-tree-hierarchy}
 \end{figure}
 \subsection{Learning the tree structure}
  \begin{figure}[t]
@@ -291,7 +290,8 @@ CRP prior used in \cite{ruslan} to allow the flexibility of  having different de
 A new class could go into one of the existing super-categories or create a new super-category. A new super-category 
 can be attached to any node which doesn't have any children that are leaf nodes. That is, we allow the parent of a new
 super-category to be any node that is not itself a super-category that has leaf nodes, which correspond to classes, as children.
-By following the procedure in \cite{ruslan},  for each possible position of the new class we calculate a likelihood term and 
+An example is shown in Figure ~\ref{fig:learning-tree-hierarchy}.
+By following the procedure in \cite{ruslan}, for each possible position of the new class we calculate a likelihood term and 
 modified-CRP prior term. The position of the new class will be the one that maximizes the sum of likelihood term and  prior term. 
 
 Let $i$ denote the node number of the leaf node corresponding to the new class.   
@@ -366,7 +366,7 @@ super-category goes above a certain threshold $maxChild$, we break down the subt
 \section {Experiments}
  
  \subsection {Implementation}
- We implement the whole algorithm in MATLAB the code is available in \cite{website:sourceCode}. We use Hog features for images. for optimizing functions we use \textit{fminunc} in MATLAB.
+ We implement the whole algorithm in MATLAB the code is available in \cite{website:sourceCode}. We use HOG \cite{ features for images. for optimizing functions we use \textit{fminunc} in MATLAB.
  One can use HOGgles \cite{hoggles} in order to see what is the shape of abstract concepts.
  
  \subsection{Data Sets}
