@@ -286,8 +286,8 @@ super-category goes above a certain threshold $maxChild$, we break down the subt
  		\includegraphics[width=0.8\linewidth]{smiley}
  	\end{center}
  	\caption{(a) First row shows eight classes of smiley faces. class 1,4,6 just have eys and class 2,3,5 just have eyes. The second row show the visualization for parameter $\theta$ for each node. The third line shows the visualization of $\theta$ for node 7,8,8 respectively. (b) shows the tree corossponding to these examples. As you can see in the visualization of parameter of node 7,8 they capture that there are eyes or mouthes in their children. (c) shows two visualizatoin of smiley faces by adding parameter by adding parameter $\theta$ of different nodes. If a new example which is look like these two come for testing we can identify it by these two}
- 	\label{fig:long}
- 	\label{fig:onecol}
+ 	\label{fig:smiley}
+ %	\label{smiley}
  \end{figure}
 \section {Experiments}
  
@@ -303,24 +303,14 @@ super-category goes above a certain threshold $maxChild$, we break down the subt
  We use data set of fine grained challenge \cite{dataSet}.There are five different domains (Cars, Birds, Aircrafts, Shoes and dogs) in this data set. In each domain there are about 100 classes. Classes are very similar to each other there are different type of cars, dogs and etc.
  \subsection{Results}
  \subsubsection{Smiley Faces}
- As mentioned before the main reason for making this dataset was to visualize our algorithm's abilities.
  
+ As mentioned before the main reason for making this dataset was to visualize our algorithm's abilities. You can see two abilities of model in fig. \ref{fig:smiley}.
  
-\textbf{merging:} As showed in \ref{merge} the goal of merging is to create and recognize some objects that we have never seen before but we can make them by combining previously seen objects. In \ref{merge} we want to recognize sad circle face by just training on sad square face and happy circle face.
+\textbf{merging:} As showed in fig. \ref{merge} the goal of merging is to create and recognize some objects that we have never seen before but we can make them by combining previously seen objects. In fig. \ref{merge} we want to recognize sad circle face by just training on sad square face and happy circle face.
 
-As shown in \ref{smiley} we have six classes three of them just have eyes and three of them just have mouthes. When we add theta of class 
+As shown in fig. \ref{fig:smiley} we have six classes three of them just have eyes and three of them just have mouthes. When we add theta of class 
  
- 
-\textbf{Meaningful super categories} merging is ...
-  hello
-  
-  
-\textbf{favoring shared parameters} merging is ...
-hello
-
-
-\textbf{using simillar classes examples}
-hello
+\textbf{Meaningful super categories} As showed in fig. \ref{fig:smiley} you can see that we visualize node 7 we can see that it capture the fact that there are eyes there. Same is true for node 8 that capture presence of mouth in all children.
 
 The accuracy of our algorithm for Smiley faces is 95%.
    
@@ -332,8 +322,8 @@ The accuracy of our algorithm for Smiley faces is 95%.
  	\caption{Example of caption.  It is set in Roman so that mathematics
  		(always set in Roman: $B \sin A = A \sin B$) may be included without an
  		ugly clash.}
- 	\label{fig:long}
- 	\label{fig:onecol}
+ %	\label{fig:long}
+ 	\label{merge}
  \end{figure}
  
  
