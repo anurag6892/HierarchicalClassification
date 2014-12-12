@@ -7,6 +7,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 
+
 % Include other packages here, before hyperref.
 
 % If you comment hyperref and then uncomment it, you should delete
@@ -43,35 +44,34 @@ Massachusetts Institute of Technology\\
 {\tt\small anurag\_m@mit.edu}
 }
 
+% TODO
+% spell check
+% bold text for variables
+
+
 \maketitle
 %\thispagestyle{empty}
 
 %%%%%%%%% ABSTRACT
 \begin{abstract}
-<<<<<<< HEAD
 	
 	Human can use similarity between objects in order to recognize rare objects. They also make many abstract concepts when they see some objects very often. Interestingly, a large part of brain is associated with common classes like faces rather than rare objects like Ostrich.
 	In our work we want to propose a model that has four mentioned characteristics.1. Use more resources for categories that have many examples and less resources for categories that have few examples, 2. Has the ability recognize objects that it has never seen before, but can be made by combining previously seen objects, 3. Objects with few examples can borrow statistical strength from similar objects with many examples, 4. Models that have lot of sharing between model parameters of different classes should be favored.
 	
-=======
-
-Human can use similarity between objects in order to recognize rare objects. They also make many abstract concepts when they see some objects very often. Interestingly, a large part of brain is associated with common classes like faces rather than rare objects like Ostrich.
-In our work we want to propose a model that has four mentioned characteristics.1. Use more resources for categories that have many examples and less resources for categories that have few examples, 2. Has the ability recognize objects that it has never seen before, but can be made by combining previously seen objects, 3. Objects with few examples can borrow statistical strength from similar objects with many examples, 4. Models that have lot of sharing between model parameters of different classes should be favored.
-
->>>>>>> b05de31a4afb6a4ebe623c620a226bdf67d9ac37
 \end{abstract}
 
 %%%%%%%%% BODY TEXT
 \section{Introduction}
 
-<<<<<<< HEAD
 Object classification is one of the fundamental problem in computer vision it is more harder when number of categories is large. When number of categories is very large the complexity of the model should not be related to the number of categories. It should capture the similarities between categories in order to classify objects easier and more accurate.
 
-we all have a hierarchical based abstract concepts for object around us. We make more hierarchical concepts for object that we encounter more often. For example, if you ask a person about furniture they can categorized it by chair, desk, sofa, table, etc. and then for chair it goes like office chair, armchair, rock chair, or even wheelchair. These sub categories are related to each other visually. In this work we try to propose a model that makes more abstract concepts when there are lots of similar classes and less otherwise. This model also share many parameters between similar objects. It helps rare object that we have less training example from them use parameters of common examples. In other words, common classes have lots of training example by these examples algorithm can set accurate parameters. In other hand, rare objects have very few examples and set the parameters in an accurate way is almost impossible . Sharing parameters between these classes help rare classes to borrow statistical strength from common classes. 
+we all have a hierarchical based abstract concepts for object around us. We make more hierarchical concepts for object that we encounter more often. For example, if you ask a person about furniture they can categorized it by chair, desk, sofa, table, etc. and then for chair it goes like office chair, armchair, rock chair, or even wheelchair. However, we call all parrots, just parrots while there are 372 species of them.
 
-We all make a model for every concept and when encounter a new object we try to check to which concept model it matches more. All learning algorithm try to add additional information to the problem to avoid over fitting. They usually use Occam-razor to have models as simple as possible. Here we want to want to change this regularization in a way that if a model use previously learned objects it can have more complex shape. By this structure Models that have lot of sharing between model parameters of different classes will be favored.
+These sub categories are related to each other visually. In this work we try to propose a model that makes more abstract concepts when there are lots of similar classes and less otherwise. This model also share many parameters between similar objects. It helps rare object that we have less training example from them use parameters of common examples. In other words, common classes have lots of training example and by them algorithm can set accurate parameters. In other hand, rare objects have very few examples and setting the parameters in an accurate way is almost impossible . Sharing parameters between these classes help rare classes to borrow statistical strength from common classes. 
 
-There are many objects around us. In the model that we have many categories, when we want to train a classifier to learn objects we should be able to model the similarities between different categories otherwise we should store many redundant information. In one vs all methods there is no difference between bicycle vs motorcycle and dogs vs motorcycle. While we like that if we have a false positive it should be bicycle rather than dogs. Even human sometime confused between different dogs or wrongly assume another animal to be a dog. So, we want a classifier to model this similarities.  
+We all make a model for every concept and when encounter a new object we try to check to which concept model it matches more. All learning algorithm try to add additional information to the problem to avoid over fitting. They usually use Occam-razor to have models as simple as possible. Here we want to change this regularization in a way that if a model use previously learned objects it can have more complex shape. By this structure Models that have lot of sharing between model parameters of different classes will be favored.
+
+There are many objects around us. In the model that we have many categories, when we want to train a classifier to learn objects we should be able to model the similarities between different categories otherwise we should store many redundant information. In one vs all methods there is no difference between bicycle vs motorcycle and dogs vs motorcycle. While we like that if we have a false positive for motorcycle it should be bicycle rather than dogs. Even human sometime confused between different dogs or wrongly assume another animal to be a dog. So, we want a classifier to model this similarities.  
 
 The rest of paper is as follows, in section two we overview the related works. There is an overview about independent classifier methods in section three. In section four we explain our method which is hierarchical multi-class model for object recognition. Finally, there is experiment in section four and Conclusion and Future works come in section five.
 
@@ -80,30 +80,21 @@ The rest of paper is as follows, in section two we overview the related works. T
 
 There are lots of work being done in the transfer learning in object classification. There are three main questions that people should answer when they want to use transfer learning. 1) What to transfer?,  2) How to transfer?, When to transfer?. For a good survey in transfer learning see \cite{transfersurvey}
 
-For the first questions, they are methods that share parameters between classes like you can learn parameter of deep network \cite{deepnetwork} by Imagenet \cite{imagenet} and then test it in another benchmark. One other method is sharing training examples. 
+For the first questions, they are methods that share parameters between classes like you can learn parameter of deep network \cite{deepnetwork} by Imagenet \cite{imagenet} and then test it in another benchmark. Some methods share training examples between classes \cite{semi}. Some share attributes \cite{attributes} and so on.
 
-One important thing in how we should transfer is that between which classes we should transfer parameters/features. For example when we add a new class we should decide that with which classes this class should share features. Consider that we just have a few example from each class so deciding which classes should share information and which classes should not is a hard question.
+One important aspect of second question is between which classes we should transfer parameters/features. For example when we add a new class we should decide that with which classes this class should share features. Consider that we just have a few example from each class so deciding which classes should share information and which classes should not is a hard question.
 
 For fining which classes should share information some method use a global priori \cite{priori} (share information between all classes) which provides small benefits but still is better than independent classifiers. There are some models \cite{semantic} that use external hierarchy. As an example in \cite{semantic} wordnet \cite{wordnet} is a semantic network for english language. Words are grouped together if they are synonyms and record semantic relation between them. With this dictionary one can understand both bicycle and care belong to vehicle.
-
-
 
 Ruslan et all. \cite{ruslan}  make a tree in which every class is a leaf. In their setting height of tree is fixed and is equal to two. However, number of nodes in the tree is not fixed and they use CRP to decide if they should add another node to the tree or not. Classes which have common parent share features. They add classes incrementally to the tree. At each step they decide where in the tree they should put the class. Although this setting support feature 3, it does not the other features mentioned before. Ruslan improve his work on \cite{ruslan2} with deep network features.
 
 Sivic et all \cite{sivic} group images using multi-layer hierarchy tree. Tree is based on common visual elements. They used generative Hierarchical Latent Dirichlet Allocation(hLDA). This model usually use for unsupervised of topic hierarchies. In this work they automatically (without supervision) discover a hierarchical structure for the visual world using unlabeled images. They are also some model that try to find some relation between categories and use them to classify images \cite{transfer22}.
 
+For the last question that when we should transfer, algorithms deal with questions like this: should we use transfer information just for testing or we can use them for training as well? If we want to use transfer information during learning should we use them at first or in the middle? Another main issue in this area is that when it is good to transfer information, and when it make it worse when we transfer information. See \cite{whentransfer} for more details.
+
 %In \cite{wordnet} 
 %There are papers that use hierarchical for sharing features and parameters between classifiers. f
 %There are many algorithms in the field of transfer learning in multi class object %recognition.(\cite{miller2000learning}) 
-=======
-We have a hierarchical based abstract concepts for object around us. We make a bigger hierarachical concepts for object that we encounter more often. For example, if you ask a person about furniture they can catagorized it by chair, desk, sofa, table, etc. and then for chair it goes like office chair, armchair, rockchair, or even wheelchair. These sub catagories are related to each other visually. In this work we try to propse a model that make more abstract concepts when there are lots of simillar classes. It also try to share many parameters between them so having lots of example for the common one help recognizing the rare one.
-
-We all make a model for every concept and when encounter a new object we try to check to which concept it matches more. All learning algorithm try to add aditional information to the problem to avoid overfitting. They usually use Occaum-razor to have as simple as possible model. Here we want to want to change this regulizatoin in a way that if a model use previously learned objects it can have more complex shape. By this structure Models that have lot of sharing between model parameters of different classes should be favored.
-
-We make a tree from all classes. In this framework every class is a leaf in the tree (figure 1) 
-
-\section{Previous work}
->>>>>>> b05de31a4afb6a4ebe623c620a226bdf67d9ac37
 
 
 \section{Hierarchical Classification Model}
@@ -159,13 +150,12 @@ using standard convex optimization solvers.
  visually related classes. Each node in the tree has a model parameter, a vector of length $D$ 
  associated with it.  Let $ \theta = \{ \theta_{1}, \theta_{2},.....,\theta_{n}\} $ denote the model parameters 
  of all the nodes in the tree, where $n$ is the number of nodes starting from the root node to the all the leaf nodes.
- The leaf nodes correspond to the $K$ object categories or classes. The parameters for a particular class, say $k$,
+ The leaf nodes correspond to the $K$ object categories or classes. The parameters for a particular class $k$
  is the sum of the parameters of all the nodes, say $i_{1}, i_{2}, ..., i_{l} $, along the path from the leaf node
  corresponding to that class up until the root node of the tree:
- \begin{equation}
+ \begin{equation} \label{beta-theta-rel}
  \beta^{(k)} = \theta_{i_{1}} +  \theta_{i_{2}} + ...... + \theta_{i_{l}}
   \end{equation} 
-<<<<<<< HEAD
  We place zero-mean spherical Gaussian priors on the parameters of each node. However, the 
  covariance matrix is dependent on the level of a particular node in the tree i.e all the nodes at
  a particular level have the same prior parameters.
@@ -191,7 +181,17 @@ E = Loss(Y,X,\beta) + \frac{\lambda_{0}}{2} \|\theta_{0} \|^{2} +
  but with the additional constraint that $\beta$ satisfies  equation \ref{beta-theta-rel} 
  according to the tree structure. Here there are $k_{j}$ nodes in level $j$ and 
  $\theta_{1j}, \theta_{2j},.....,\theta_{k_{j}j}$ are the parameters of nodes in level $j$.
-
+\begin{figure}[t]
+	\begin{center}
+		%\fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
+		\includegraphics[width=0.8\linewidth]{tree}
+	\end{center}
+	\caption{Example of caption.  It is set in Roman so that mathematics
+		(always set in Roman: $B \sin A = A \sin B$) may be included without an
+		ugly clash.}
+	\label{fig:long}
+	\label{fig:onecol}
+\end{figure}
 \subsection{Learning the tree structure}
 If we are given the tree structure that indicates the relation between different classes, then the 
 learning algorithm only needs to optimize for the loss in equation \ref{hier-loss}. However, as 
@@ -227,7 +227,19 @@ term goes up. We have observed that the maximum of the likelihood over the model
 		\frac{\gamma}{n+\gamma*m} & : \text{$j$ is new}
 	   \end{array}
 	  \right.
- \end{displaymath}  
+ \end{displaymath} 
+ 
+  \begin{figure}[t]
+  	\begin{center}
+  		%\fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
+  		\includegraphics[width=0.8\linewidth]{split}
+  	\end{center}
+  	\caption{Example of caption.  It is set in Roman so that mathematics
+  		(always set in Roman: $B \sin A = A \sin B$) may be included without an
+  		ugly clash.}
+  	\label{fig:long}
+  	\label{fig:onecol}
+  \end{figure}
 where $n$ is the total number of leaf nodes, $m_{j}$
 is the number of leaf nodes under super-category $j$,
 $\gamma$ is the concentration parameter that controls the probability of creating a new super-category,
@@ -257,16 +269,74 @@ super-category goes above a certain threshold $maxChild$, we break down the subt
  of $maxChild$ leads to very fine-grained partitions whereas a higher value of $maxChild$ results in coarser partitions. We found that 
  a value of four results in best results. 
  
-
+ \begin{figure}[t]
+ 	\begin{center}
+ 		%\fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
+ 		\includegraphics[width=0.8\linewidth]{smiley}
+ 	\end{center}
+ 	\caption{Example of caption.  It is set in Roman so that mathematics
+ 		(always set in Roman: $B \sin A = A \sin B$) may be included without an
+ 		ugly clash.}
+ 	\label{fig:long}
+ 	\label{fig:onecol}
+ \end{figure}
+\section {Experiments}
+ 
+ \subsection {Implementation}
+ We implement the whole algorithm in MATLAB the code is available in \cite{code}. We use Hog features for images. for optimizing functions we use \textit{fminunc} in MATLAB.
+ One can use HOGgles \cite{hoggles} in order to see what is the shape of abstract concepts.
+ 
+ \subsection{Data Sets}
+ \subsubsection{Smiley Faces}
+ We make a syntactic data set in order to check our algorithm abilities. (merging two subcategories, make meaningful abstract concepts, make more nodes when there are more classes). There are 320 classes in this data set. each class has different nose, mouth, face and eyes. There are 1000 positive and negative examples in each classes there are noises added to each class. 
+ \subsubsection{Fine Grained Data Set}
+ We use data set of fine grained challenge \cite{dataset}.There are five different domains (Cars, Birds, Aircrafts, Shoes and dogs) in this data set. In each domain there are about 100 classes. 
+ \subsection{Results}
+ \subsubsection{Smiley Faces}
+ As mentioned before the main reason of this dataset was to visualize our algorithm's abilities.
+ \textbf{merging} merging is ...
+ \begin{figure}[t]
+ 	\begin{center}
+ 		%\fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
+ 		\includegraphics[width=0.8\linewidth]{merge}
+ 	\end{center}
+ 	\caption{Example of caption.  It is set in Roman so that mathematics
+ 		(always set in Roman: $B \sin A = A \sin B$) may be included without an
+ 		ugly clash.}
+ 	\label{fig:long}
+ 	\label{fig:onecol}
+ \end{figure}
+ 
  
 
 
-=======
-  
->>>>>>> b05de31a4afb6a4ebe623c620a226bdf67d9ac37
+ \subsubsection{Fine Grained Data Set}
+Due to limited time we just could learn for two hours. We use 10k pixels images for 8 classes and two domains. We reach the accuracy of 70%.
+
+For checking that if one class belong to one of the leaves we compute 
+\begin{displaymath}
+p(z=j) = \left \{
+\begin{array}{lr}
+\frac{m_{j}}{n+\gamma*m} & : \text{$j$ is old} \\
+\frac{\gamma}{n+\gamma*m} & : \text{$j$ is new}
+\end{array}
+\right.
+\end{displaymath}  
+
+and find the maximum as a desired class.
+
+
+\begin{figure*}
+	\begin{center}
+	%	\fbox{\rule{0pt}{2in} \rule{.9\linewidth}{0pt}}
+	    \includegraphics[width=1\linewidth]{carsDogs.png}
+	\end{center}
+	\caption{Example of a short caption, which should be centered.}
+	\label{fig:short}
+\end{figure*}
 {\small
 \bibliographystyle{ieee}
-\bibliography{egbib}
+\bibliography{finalReport}
 }
 
 \end{document}
