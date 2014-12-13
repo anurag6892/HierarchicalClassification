@@ -47,7 +47,7 @@ beta = beta + x;
         val = val + 1/2*lambda*(norm(theta(child)^2));
         child = parents(child);
     end
-   % val = val + 1/2*lambda*(norm(theta(child)^2));
+   val = val + 1/2*lambda*(norm(theta(child)^2));
     
 
 end
