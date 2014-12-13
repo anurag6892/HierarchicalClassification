@@ -127,7 +127,7 @@ they want to use transfer learning. 1) What to transfer?,  2) How to transfer?,
 When to transfer?. For a good survey in transfer learning see
 \cite{transfersurvey}. For the first question, there are methods that share
 parameters between classes like you can learn parameter of deep network
-\cite{deepnetwork} by Imagenet \cite{imagenet} and then test it in on another
+\cite{deepnet} by Imagenet \cite{imagenet} and then test it in on another
 benchmark. One other method is sharing training examples.  One important
 thing in how we should transfer is that between which classes we should
 transfer parameters/features. For example when we add a new class we
@@ -148,7 +148,7 @@ care belong to vehicle.
 
 Ruslan et al. \cite{ruslan} make a tree in which every class is a leaf. In
 their setting, height of tree is fixed and is equal to two. However, number of
-super-categories in the tree is not fixed and they use Chinese Restaurant Prior \cite{CRP} 
+super-categories in the tree is not fixed and they use Chinese Restaurant Prior 
 to decide if they should add
 a new super-category to the tree or not. Classes which have a common parent share
 features. They add classes incrementally to the tree. At each step they decide
@@ -234,7 +234,7 @@ using the training data for that particular class.
  	\label{fig:hier-tree-intro}
  \end{figure}
 
-In our framework, a hierarchical tree structure, depicted in Figure~\ref{hier-tree-intro} is used to model sharing of parameters between 
+In our framework, a hierarchical tree structure, depicted in Fig.~\ref{fig:hier-tree-intro} is used to model sharing of parameters between 
 visually related classes. Each node in the tree has a model parameter, a vector of length $D$ 
 associated with it.  Let $ \theta = \{ \theta_{1}, \theta_{2},.....,\theta_{n}\} $ denote the model parameters 
 of all the nodes in the tree, where $n$ is the number of nodes starting from the root node to the all the leaf nodes.
@@ -299,7 +299,7 @@ CRP prior used in \cite{ruslan} to allow the flexibility of  having different de
 A new class could go into one of the existing super-categories or create a new super-category. A new super-category 
 can be attached to any node which doesn't have any children that are leaf nodes. That is, we allow the parent of a new
 super-category to be any node that is not itself a super-category that has leaf nodes, which correspond to classes, as children.
-An example is shown in Figure ~\ref{fig:learning-tree-hierarchy}.
+An example is shown in Fig.~\ref{fig:learning-tree-hierarchy}.
 By following the procedure in \cite{ruslan}, for each possible position of the new class we calculate a likelihood term and 
 modified-CRP prior term. The position of the new class will be the one that maximizes the sum of likelihood term and  prior term. 
 
@@ -357,12 +357,12 @@ routine for these nodes. This leads to significant reduction in time taken to le
 We also use a simple heuristic to maintain a fine-partitioning of the classes among into among super-categories. 
 We need to avoid many leaf nodes accumulating under the 
 same super-category as this would lead to a very coarse-grain partitioning of the classes.  So, whenever the number of leaf nodes under a 
-super-category goes above a certain threshold $maxChild$, we break down the subtree under that node to create
+super-category goes above a certain threshold $maxChild$, we break down the sub tree under that node to create
  a more fine-grained partitioning.  To do this we run the entire optimization algorithm described above on the classes that were originally under this
  super-category. Basically, we consider the node corresponding to the super-category as a root node and keep adding new leaf nodes 
  to form a tree under this root node. In most cases, the $maxChild$ number of classes that previously shared the same parent are dividing
  several finer super-categories and have different parents.  In the rare case when the classes are very similar to each other, this process will add
- redundant to the tree. We identify this pathology and remove the redundant node while appropriately modifying the modle parameters of the 
+ redundant to the tree. We identify this pathology and remove the redundant node while appropriately modifying the model parameters of the 
  relevant nodes. The parameter $maxChild$ can be configured to control the degree of fine-grained partitioning of classes. A lower value
  of $maxChild$ leads to very fine-grained partitions whereas a higher value of $maxChild$ results in coarser partitions. We found that 
  a value of four results in best results. 
@@ -370,75 +370,83 @@ super-category goes above a certain threshold $maxChild$, we break down the subt
  \begin{figure}[t]
  	\begin{center}
  		%\fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
- 		\includegraphics[width=0.8\linewidth]{smiley}
+ 		\includegraphics[width=0.9\linewidth]{smiley}
  	\end{center}
- 	\caption{(a) First row shows eight classes of smiley faces. class 1,4,6 just have eys and class 2,3,5 just have eyes. The second row show the visualization for parameter $\theta$ for each node. The third line shows the visualization of $\theta$ for node 7,8,8 respectively. (b) shows the tree corossponding to these examples. As you can see in the visualization of parameter of node 7,8 they capture that there are eyes or mouthes in their children. (c) shows two visualizatoin of smiley faces by adding parameter by adding parameter $\theta$ of different nodes. If a new example which is look like these two come for testing we can identify it by these two}
+ 	\caption{(a) First row shows eight classes of smiley faces. class 1,4,6 just have eyes and class 2,3,5 just have eyes. The second row show the visualization for parameter $\theta$ for each node. The third line shows the visualization of $\theta$ for node 7,8,8 respectively. (b) shows the tree corresponding to these examples. As you can see in the visualization of parameter of node 7,8 they capture that there are eyes or mouths in their children. (c) shows two visualization of smiley faces by adding parameter by adding parameter $\theta$ of different nodes. If a new example which is look like these two come for testing we can identify it by these two}
  	\label{fig:smiley}
  %	\label{smiley}
  \end{figure}
 \section {Experiments}
  
- \subsection {Implementation}
- We implemented the whole algorithm in MATLAB.  The code is available at \cite{website:sourceCode}. We use HOG \cite{hog} to genertate feature vectors for images. 
- For optimizing the probabilistic loss functions we use \textit{fminunc} function in MATLAB that does unconstrained optimization using Quasi-Newton method. 
- One can use HOGgles \cite{hoggles} in order to visualize the learned model parameters.
- 
- \subsection{Data Sets}
- \subsubsection{Smiley Faces}
- We make a syntactic data set in order to check our algorithm abilities. (merging two subcategories, make meaningful abstract concepts, make more nodes when there are more classes). There are 320 classes in this data set. Each class is a smiley face that has different nose, mouth, face and eyes. There are 1000 positive and negative examples in each classes. The pictures are 25 by 25 and we add noises added to each example of the class.
-  
- \subsubsection{Fine Grained Data Set}
- We use data set of fine grained challenge \cite{dataSet}.There are five different domains (Cars, Birds, Aircrafts, Shoes and dogs) in this data set. In each domain there are about 100 classes. Classes are very similar to each other there are different type of cars, dogs and etc.
- \subsection{Results}
- \subsubsection{Smiley Faces}
- 
- As mentioned before the main reason for making this dataset was to visualize our algorithm's abilities. You can see two abilities of model in fig. \ref{fig:smiley}.
- 
-\textbf{merging:} As showed in fig. \ref{merge} the goal of merging is to create and recognize some objects that we have never seen before but we can make them by combining previously seen objects. In fig. \ref{merge} we want to recognize sad circle face by just training on sad square face and happy circle face.
-
-As shown in fig. \ref{fig:smiley} we have six classes three of them just have eyes and three of them just have mouthes. When we add theta of class 
- 
-\textbf{Meaningful super categories} As showed in fig. \ref{fig:smiley} you can see that we visualize node 7 we can see that it capture the fact that there are eyes there. Same is true for node 8 that capture presence of mouth in all children.
-
-The accuracy of our algorithm for Smiley faces is 95%.
-   
  \begin{figure}[t]
  	\begin{center}
  		%\fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
- 		\includegraphics[width=0.8\linewidth]{merge}
+ 		\includegraphics[width=0.6\linewidth]{merge}
  	\end{center}
- 	\caption{Example of caption.  It is set in Roman so that mathematics
- 		(always set in Roman: $B \sin A = A \sin B$) may be included without an
- 		ugly clash.}
+ 	\caption{We propose a model that can combine features of two different classes to make a new class. In this figure, the goal is to recognize sad circle face by just training on smiley circle face and sad square face}
  %	\label{fig:long}
  	\label{merge}
  \end{figure}
  
  
-
-
- \subsubsection{Fine Grained Data Set}
-Due to limited time we just could train for two hours. When we use 100*100 pixel images for 8 classes and two domains, we reach an accuracy of 70%.
-
-For checking that if one class belong to one of the leaves we compute 
+ \subsection {Implementation}
+ We implemented the whole algorithm in MATLAB.  The code is available at \cite{website:sourceCode}. We use HOG \cite{hog} to generate feature vectors for images. 
+ For optimizing the probabilistic loss functions we use \textit{fminunc} function in MATLAB that does unconstrained optimization using Quasi-Newton method. 
+ One can use HOGgles \cite{hoggles} in order to visualize the learned model parameters.
+ 
+At testing time, we decide the class of an input image as the one that has the maximum probability
+for the learned model parameters.
 \begin{displaymath}
-predictedClass = \operatorname*{arg\,max}_{i \in leaves of Tree} 
-\frac{\frac{1}{(1+exp(-\beta'_i.\phi(x)))}}{\|\beta_i\|^2}
+ \text{predictedClass} = \operatorname*{arg\,max}_{k} \frac { \exp( \beta^{(k)^{T}}  \phi(x^{(k)}))  }{  1 + \exp(\beta^{(k)^{T}}  \phi(x^{(k)}) ) }
 \end{displaymath}  
+ 
+ \subsection{Data Sets}
+ \subsubsection{Smiley Faces}
+ We make a syntactic data set in order to check our algorithm's properties(merging two subcategories, make meaningful abstract concepts, make more nodes when there are more classes). There are 320 classes in this data set. Each class is a smiley face that has different nose, mouth, face and eyes. There are 1000 positive and 1000 negative examples in each classes. The pictures are 25 by 25 and we add random noise to each example of the class.
+  
+ \subsubsection{Fine Grained Data Set}
+ We use data set of Fine Grained Challenge \cite{dataSet}. There are five different domains (Cars, Birds, Aircrafts, Shoes and dogs) in this data set. In each domain there are about 100 classes. Classes within a domain are very similar to each other like different types of cars, dogs and etc.
+ \subsection{Results}
+ \subsubsection{Smiley Faces}
+ 
+ As mentioned before, the main reason for making this dataset was to visualize our algorithm's abilities. You can see two abilities of model in Fig.~\ref{fig:smiley}.
+ 
+\textbf{Merging:} As shown in Fig.~\ref{merge} the goal of merging is to create and recognize some objects that we have never seen before but which can be made by combining objects from classes in the training set. In Fig.~\ref{merge} we want to recognize sad circle face by just training on sad square face and happy circle face.
 
-and find the maximum as a desired class.
+As shown in Fig.~\ref{fig:smiley} we have six classes three of them just have eyes and three of them just have mouths. When we add theta of class 
+ 
+\textbf{Meaningful super categories} As showed in Fig.~\ref{fig:smiley} you can see that when we visualize the model parameters of node 7 we can see that it captures the fact that there are eyes in all its child classes. Same is true for node 8 that captures presence of mouth in all its children.
 
+The accuracy of our algorithm for Smiley faces is 95\%.
+   
+ 
 \begin{figure*}
 	\begin{center}
 	%	\fbox{\rule{0pt}{2in} \rule{.9\linewidth}{0pt}}
 	    \includegraphics[width=1\linewidth]{carsDogs.png}
 	\end{center}
-	\caption{Example of a short caption, which should be centered.}
-	\label{fig:short}
+	\caption{This is the tree made by algorithm for fine grained data set, There are two main subtree in the figure the left one corrospond to cars and the right one corrosponds to dogs. Visually simillar dogs/cars are in a same subtree.}
+	\label{cardogs}
 \end{figure*}
+
+ \subsubsection{Fine Grained Data Set}
+ The difference between classes in the same domain is very negligible in this data set. Because of this, finding a good model parameters
+ when training on these classes requires high quality pictures and lots of training examples. For example, if we set size of images to 100*100 pixels we can reach accuracy of 70\% for 8 different classes. However, if we set the image size to 50*50 pixels the accuracy decreases to 22\% and 18\% if we set the size to 30*30 pixels.
+ 
+ As the difference between classes are very fine-grained taking into account the color of the image is really important. In our case we find the HOG feature for colored image, however hog is kind of invariant to the color so we miss some information here. We expect that if we include the 3 color channels in the calculating the feature vector for each image we will attain better accuracy.
+ 
+ The accuracy of our model for finding differences between two domains is very high around 92\%, and as you can see in Fig.~\ref{cardogs} cars and dogs belongs to two different sub trees. One other important aspect of our algorithm as we said before we want incorrect examples belongs to similar categories rather than completely different categories. We saw this behavior in our testing.
+ 
+\section{Conclusion}
+In this work we try to make a hierarchical presentation of fine grained objects. We test our model on synthetic images and natural images. The algorithm put classes under the same super category if they are visually simillar. The algorithm allows super categories which have lots of classes to have more complex model. As a result, model become more accurate for common objects and rare objects use parameters of common objects for their model.
+ 
+
+
+
+
 {\small
-  \bibliographystyle{ieee}
-  \bibliography{finalReport}
+\bibliographystyle{ieee}
+\bibliography{finalReport}
 }
 
 \end{document}
