@@ -4,7 +4,7 @@ function [theta] = TreeMaker()
     global ancestorsList;
     global parent;
     Inf = 1000000;
-    MaxChild = 3;
+    MaxChild = 4;
     parent = repmat([-1], K,1);
     theta = zeros(N, 2*K+1); % This should be 2*K + 1 
     ted = zeros(2*K+1,1); 
@@ -81,10 +81,10 @@ function [theta] = TreeMaker()
             if(ted(who) > MaxChild)
                 
                  cprintf('red', ['starting make node ' num2str(who), ' a root.']);
-                ted(who)=0;
                 [parent, theta, ted, change]=makeNewTree(who, parent, theta, ted);
                 if(change)
                     root(who)=true;
+                    ted(who)=0;
                 end
             end
 

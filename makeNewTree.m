@@ -22,13 +22,14 @@ end
 
 first = size(parent,1)+1;
 all = size(considering, 1);
+
 for c=1:size(considering,1)
     n = size(parent,1);
     i= considering(c);
     
     parent(i) = root;
     [lastThetaBest, ~, val] = findBestBeta(i, theta, parent, 1, root);
-    likelihoodBest = -val + CRP.ProbabilityNew(all, ted);
+    likelihoodBest = -val + CRP.ProbabilityNew(1/100*all, ted);
     who = n+1;
     
     disp(['NEWWWW  likelihood of class ' , int2str(i), ' goes under a new supercatagory is', num2str(likelihoodBest)]);
@@ -40,7 +41,7 @@ for c=1:size(considering,1)
         
         [lastTheta, ~, val] = findBestBeta(i, theta, parent, 0, root);
         
-        likelihood = -val+ CRP.Probability(j, all, ted);%computeLikelihood(i, Beta) ;
+        likelihood = -val+ CRP.Probability(j, 1/100*all, ted);%computeLikelihood(i, Beta) ;
         
         if likelihood > likelihoodBest
             
