@@ -8,7 +8,8 @@ function [] = LoadTrainingData()
     % Right now for our specific training data there is no negative example
     % However, I can add manually or we can choose some negative example from
     % other classes (which make more sense :D)
-    
+
+
 global TrainingData K N sqrtN;
 
 dirs = cell(4,5,4,4,2);
